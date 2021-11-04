@@ -21,6 +21,8 @@ public class PedidoService {
     ParcelamentoRepository parcelamentoRepository;
     @Autowired
     StatusPedidoRepository statusPedidoRepository;
+    @Autowired
+    NfService nfService;
 
     public PedidoDTO create(PedidoDTO dto){
         Pedido pedido = this.dtoToBusiness(dto);
@@ -67,6 +69,24 @@ public class PedidoService {
         }
         return null;
     }
+    public NfDTO GerarNf(PedidoDTO pedidoDTO){
+        if(pedidoRepository.existsById(pedidoDTO.getId())){
+            if(pedidoDTO.getCliente()!=null){
+                if(clienteRepository.existsById(pedidoDTO.getCliente().getId_Cliente())){
+                    Pedido pedido = pedidoRepository.getById(pedidoDTO.getId());
+                    NfDTO nfDTO = new NfDTO();
+                    nfDTO.setEmissao(new Date());
+                    nfDTO.setSerie(""+pedidoDTO.getId());
+                    nfDTO.setChave_acesso(pedidoDTO.getId());
+                    nfDTO.setSubtotal(pedidoDTO.getSubtotal());
+                    nfDTO.setTotal(pedidoDTO.getTotal());
+                    nfDTO.setCliente(pedidoDTO.getCliente());
+                    return nfService.addNf(nfDTO);
+                }
+            }
+        }
+        return null;
+    }
     public void deleteById(Long id){
         if(pedidoRepository.existsById(id)){
             pedidoRepository.deleteById(id);
@@ -104,6 +124,7 @@ public class PedidoService {
         bus.setSubtotal(dto.getSubtotal());
         bus.setDataDeCriacao(dto.getDataDeCriacao());
         bus.setFrete(dto.getFrete());
+        bus.setFinalizado(dto.getFinalizado());
         if(dto.getCartao() != null){
             Cartao m = new Cartao();
             if(dto.getCartao().getId_Cartao() != null){
@@ -192,6 +213,7 @@ public class PedidoService {
         dto.setSubtotal(bus.getSubtotal());
         dto.setDataDeCriacao(bus.getDataDeCriacao());
         dto.setFrete(bus.getFrete());
+        dto.setFinalizado(bus.getFinalizado());
         if(bus.getCartao()!= null) {
             CartaoDTO cartao = new CartaoDTO();
             cartao.setId_Cartao(bus.getCartao().getId_Cartao());

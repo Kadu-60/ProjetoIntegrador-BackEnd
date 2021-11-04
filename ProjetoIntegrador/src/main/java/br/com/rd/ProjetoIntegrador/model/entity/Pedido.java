@@ -19,6 +19,8 @@ public class Pedido {
     private Date dataDeCriacao;
     @Column(nullable = false)
     private Double frete;
+    @Column(nullable = false)
+    private Boolean finalizado;
 
 
 

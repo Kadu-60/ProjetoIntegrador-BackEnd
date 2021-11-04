@@ -10,7 +10,7 @@ public class Nf {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_nf;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long chave_acesso;
     @Column(nullable = false)
     private String serie;
