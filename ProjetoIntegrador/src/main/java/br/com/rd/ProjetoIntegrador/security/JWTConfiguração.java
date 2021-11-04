@@ -13,7 +13,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-
+@EnableWebSecurity
 public class JWTConfiguração extends WebSecurityConfigurerAdapter {
 
     private final DetalheClienteServiceImpl clienteService;
@@ -33,8 +33,15 @@ public class JWTConfiguração extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/login", "/cadastro-cliente/salvar").permitAll()
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/login", "/cadastroCliente/salvar"
+                        ,"/formulariocontato").permitAll()
+                .antMatchers(HttpMethod.GET, "/home/categorias", "/home/destaques", "/home/novidades"
+                        ,"/produtos", "/produtos/{id}",
+                        "/produtos/por-categoria/{id}", "/produtos/por-marca/{id}", "/produtos/por-familia/{id}"
+                        , "/produtos/por-prato/{id}", "/Marca"
+                        ,"/produtos/buscar/{id}","/formulariocontato/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAutenticarFilter(authenticationManager()))
