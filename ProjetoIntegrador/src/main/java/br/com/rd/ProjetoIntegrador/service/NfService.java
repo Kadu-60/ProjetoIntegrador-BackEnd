@@ -24,6 +24,7 @@ public class NfService {
     ClienteRepository clienteRepository;
 
     public NfDTO addNf (NfDTO nf){
+        nf.setEmissao(new Date());
         Nf novaNf = this.dtoToBusiness(nf);
 
         if (novaNf.getCliente() != null){
@@ -37,7 +38,7 @@ public class NfService {
             novaNf.setCliente(cliente);
         }
 
-        novaNf.setEmissao(new Date());
+
         novaNf = nfRepository.save(novaNf);
         return this.businessToDTO(novaNf);
     }

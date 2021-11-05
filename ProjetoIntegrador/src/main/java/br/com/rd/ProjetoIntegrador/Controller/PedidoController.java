@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.Controller;
 
+import br.com.rd.ProjetoIntegrador.model.dto.NfDTO;
 import br.com.rd.ProjetoIntegrador.model.dto.PedidoDTO;
 import br.com.rd.ProjetoIntegrador.model.dto.StatusPedidoDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.Pedido;
@@ -43,4 +44,8 @@ public class PedidoController {
         return this.pedidoService.create(dto);
     }
 
+    @GetMapping("/gerarNf")
+    public NfDTO gerarNf(@RequestBody PedidoDTO dto){
+        return this.pedidoService.gerarNf(dto);
+    }
 }

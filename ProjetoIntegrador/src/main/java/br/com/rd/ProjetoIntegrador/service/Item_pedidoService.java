@@ -224,10 +224,10 @@ public class Item_pedidoService {
                     formaPagamento.setParcelamento(bussines.getItem_pedido_key().getPedido().getParcelamento().getParcelamento());
                     dto.setPagamento(formaPagamento);
                 }
-                if(bussines.getItem_pedido_key().getPedido().getStatusPedido()!= null) {
+                if(bussines.getItem_pedido_key().getPedido().getStatusEntrega()!= null) {
                     StatusPedidoDTO statusPedido = new StatusPedidoDTO();
-                    statusPedido.setId_status_pedido(bussines.getItem_pedido_key().getPedido().getStatusPedido().getId_status_pedido());
-                    statusPedido.setEstado_pedido(bussines.getItem_pedido_key().getPedido().getStatusPedido().getEstado_pedido());
+                    statusPedido.setId_status_pedido(bussines.getItem_pedido_key().getPedido().getStatusEntrega().getId_status_pedido());
+                    statusPedido.setEstado_pedido(bussines.getItem_pedido_key().getPedido().getStatusEntrega().getEstado_pedido());
                     dto.setStatus(statusPedido);
                 }
                 pedidoDTO.getItem_pedido_key().setPedido(dto);
@@ -332,7 +332,7 @@ public class Item_pedidoService {
                     }else{
                         m.setEstado_pedido(dto.getItem_pedido_key().getPedido().getStatus().getEstado_pedido());
                     }
-                    pedidobus.setStatusPedido(m);
+                    pedidobus.setStatusEntrega(m);
                 }
                 bus.getItem_pedido_key().setPedido(pedidobus);
             }

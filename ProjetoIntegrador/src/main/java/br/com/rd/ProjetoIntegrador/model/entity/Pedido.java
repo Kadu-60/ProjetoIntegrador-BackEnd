@@ -34,7 +34,7 @@ public class Pedido {
     private Parcelamento parcelamento;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_status_pedido")
-    private StatusPedido statusPedido;
+    private StatusPedido statusEntrega;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_endereco")
     private Endereco endereco;

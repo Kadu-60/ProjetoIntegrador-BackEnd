@@ -22,7 +22,7 @@ public class PedidoService {
     @Autowired
     StatusPedidoRepository statusPedidoRepository;
     @Autowired
-    NfService nfService;
+    NfRepository nfRepository;
 
     public PedidoDTO create(PedidoDTO dto){
         Pedido pedido = this.dtoToBusiness(dto);
@@ -40,11 +40,11 @@ public class PedidoService {
                 pedido.setParcelamento(m);
             }
         }
-        if(pedido.getStatusPedido()!=null){
-            Long id = pedido.getStatusPedido().getId_status_pedido();
+        if(pedido.getStatusEntrega()!=null){
+            Long id = pedido.getStatusEntrega().getId_status_pedido();
             if(id!=null){
                 StatusPedido m = this.statusPedidoRepository.getById(id);
-                pedido.setStatusPedido(m);
+                pedido.setStatusEntrega(m);
             }
         }
         pedido.setDataDeCriacao(new Date());
@@ -58,32 +58,77 @@ public class PedidoService {
         if(op.isPresent()){
             Pedido obj = op.get();
             if(sp.getId_status_pedido()!= null) {
-                obj.setStatusPedido(this.statusPedidoRepository.getById(sp.getId_status_pedido()));
+                obj.setStatusEntrega(this.statusPedidoRepository.getById(sp.getId_status_pedido()));
             }else{
                 StatusPedido spbus = new StatusPedido();
                 spbus.setEstado_pedido(sp.getEstado_pedido());
-                obj.setStatusPedido(spbus);
+                obj.setStatusEntrega(spbus);
             }
             pedidoRepository.save(obj);
             return businessToDTO(obj);
         }
         return null;
     }
-    public NfDTO GerarNf(PedidoDTO pedidoDTO){
+    public NfDTO gerarNf(PedidoDTO pedidoDTO){
         if(pedidoRepository.existsById(pedidoDTO.getId())){
-            if(pedidoDTO.getCliente()!=null){
-                if(clienteRepository.existsById(pedidoDTO.getCliente().getId_Cliente())){
-                    Pedido pedido = pedidoRepository.getById(pedidoDTO.getId());
-                    NfDTO nfDTO = new NfDTO();
-                    nfDTO.setEmissao(new Date());
-                    nfDTO.setSerie(""+pedidoDTO.getId());
-                    nfDTO.setChave_acesso(pedidoDTO.getId());
-                    nfDTO.setSubtotal(pedidoDTO.getSubtotal());
-                    nfDTO.setTotal(pedidoDTO.getTotal());
-                    nfDTO.setCliente(pedidoDTO.getCliente());
-                    return nfService.addNf(nfDTO);
+
+            Pedido pedido = pedidoRepository.getById(pedidoDTO.getId());
+            if(pedido.getNf()==null){
+                Nf business = new Nf();
+                business.setSerie(""+pedido.getId());
+                business.setChave_acesso(pedido.getId());
+                business.setSubtotal(pedido.getSubtotal());
+                business.setTotal(pedido.getTotal());
+                business.setCliente(pedido.getCliente());
+                business.setEmissao(new Date());
+                business = nfRepository.save(business);
+                pedido.setNf(business);
+                pedido.setFinalizado(true);
+                this.pedidoRepository.save(pedido);
+//            Conversão de nf business to nf dto
+                NfDTO dto = new NfDTO();
+                dto.setId_nf(business.getId_nf());
+                dto.setChave_acesso(business.getChave_acesso());
+                dto.setSerie(business.getSerie());
+                dto.setEmissao(business.getEmissao());
+                dto.setSubtotal(business.getSubtotal());
+                dto.setTotal(business.getTotal());
+                if (business.getCliente() != null){
+                    ClienteDTO clienteDTO = new ClienteDTO();
+                    clienteDTO.setId_Cliente(business.getCliente().getId_Cliente());
+                    clienteDTO.setNome(business.getCliente().getNome());
+                    clienteDTO.setCpf(business.getCliente().getCpf());
+                    clienteDTO.setEmail(business.getCliente().getEmail());
+                    clienteDTO.setTelefone(business.getCliente().getTelefone());
+                    clienteDTO.setDataNascimento(business.getCliente().getDataNascimento());
+                    dto.setCliente(clienteDTO);
                 }
+//            Conversão de nf business to nf dto
+                return dto;
+            }else{
+                Nf business = pedido.getNf();
+//            Conversão de nf business to nf dto
+                NfDTO dto = new NfDTO();
+                dto.setId_nf(business.getId_nf());
+                dto.setChave_acesso(business.getChave_acesso());
+                dto.setSerie(business.getSerie());
+                dto.setEmissao(business.getEmissao());
+                dto.setSubtotal(business.getSubtotal());
+                dto.setTotal(business.getTotal());
+                if (business.getCliente() != null){
+                    ClienteDTO clienteDTO = new ClienteDTO();
+                    clienteDTO.setId_Cliente(business.getCliente().getId_Cliente());
+                    clienteDTO.setNome(business.getCliente().getNome());
+                    clienteDTO.setCpf(business.getCliente().getCpf());
+                    clienteDTO.setEmail(business.getCliente().getEmail());
+                    clienteDTO.setTelefone(business.getCliente().getTelefone());
+                    clienteDTO.setDataNascimento(business.getCliente().getDataNascimento());
+                    dto.setCliente(clienteDTO);
+                }
+//            Conversão de nf business to nf dto
+                return dto;
             }
+
         }
         return null;
     }
@@ -200,7 +245,7 @@ public class PedidoService {
             }else{
                 m.setEstado_pedido(dto.getStatus().getEstado_pedido());
             }
-            bus.setStatusPedido(m);
+            bus.setStatusEntrega(m);
         }
         return bus;
     }
@@ -214,6 +259,22 @@ public class PedidoService {
         dto.setDataDeCriacao(bus.getDataDeCriacao());
         dto.setFrete(bus.getFrete());
         dto.setFinalizado(bus.getFinalizado());
+        if(bus.getNf()!=null){
+            dto.setNf(new NfDTO());
+            dto.getNf().setCliente(new ClienteDTO());
+            dto.getNf().setId_nf(bus.getNf().getId_nf());
+            dto.getNf().getCliente().setId_Cliente(bus.getCliente().getId_Cliente());
+            dto.getNf().getCliente().setTelefone(bus.getCliente().getTelefone());
+            dto.getNf().getCliente().setEmail(bus.getCliente().getEmail());
+            dto.getNf().getCliente().setNome(bus.getCliente().getNome());
+            dto.getNf().getCliente().setCpf(bus.getCliente().getCpf());
+            dto.getNf().getCliente().setDataNascimento(bus.getCliente().getDataNascimento());
+            dto.getNf().setTotal(bus.getNf().getTotal());
+            dto.getNf().setSubtotal(bus.getNf().getSubtotal());
+            dto.getNf().setEmissao(bus.getNf().getEmissao());
+            dto.getNf().setSerie(bus.getNf().getSerie());
+            dto.getNf().setChave_acesso(bus.getNf().getChave_acesso());
+        }
         if(bus.getCartao()!= null) {
             CartaoDTO cartao = new CartaoDTO();
             cartao.setId_Cartao(bus.getCartao().getId_Cartao());
@@ -251,10 +312,10 @@ public class PedidoService {
             formaPagamento.setParcelamento(bus.getParcelamento().getParcelamento());
             dto.setPagamento(formaPagamento);
         }
-        if(bus.getStatusPedido()!= null) {
+        if(bus.getStatusEntrega()!= null) {
             StatusPedidoDTO statusPedido = new StatusPedidoDTO();
-            statusPedido.setId_status_pedido(bus.getStatusPedido().getId_status_pedido());
-            statusPedido.setEstado_pedido(bus.getStatusPedido().getEstado_pedido());
+            statusPedido.setId_status_pedido(bus.getStatusEntrega().getId_status_pedido());
+            statusPedido.setEstado_pedido(bus.getStatusEntrega().getEstado_pedido());
             dto.setStatus(statusPedido);
         }
         return dto;
