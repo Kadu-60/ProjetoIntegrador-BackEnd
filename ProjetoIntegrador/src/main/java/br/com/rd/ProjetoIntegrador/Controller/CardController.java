@@ -1,6 +1,6 @@
 package br.com.rd.ProjetoIntegrador.Controller;
 
-import br.com.rd.ProjetoIntegrador.model.dto.CardProdutoDTO;
+import br.com.rd.ProjetoIntegrador.model.dto.Card.CardProdutoDTO;
 import br.com.rd.ProjetoIntegrador.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

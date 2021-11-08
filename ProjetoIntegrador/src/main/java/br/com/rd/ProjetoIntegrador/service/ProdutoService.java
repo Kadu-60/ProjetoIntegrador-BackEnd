@@ -1,16 +1,13 @@
 package br.com.rd.ProjetoIntegrador.service;
 
 import br.com.rd.ProjetoIntegrador.model.dto.*;
+import br.com.rd.ProjetoIntegrador.model.dto.Card.CardProdutoDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.*;
 import br.com.rd.ProjetoIntegrador.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProdutoService {
@@ -25,6 +22,8 @@ public class ProdutoService {
     MarcaRepository marcaRepository;
     @Autowired
     PratoRepository pratoRepository;
+//    @Autowired
+//    CardRepository cardRepository;
 
 
     public ProdutoDTO addProduto(ProdutoDTO produto){
@@ -56,24 +55,32 @@ public class ProdutoService {
     }
 
     public CardProdutoDTO findCardProdutoById_produto(Long id){
-        try{
-            ResultSet rs =  this.produtoRepository.findCardProdutoById_produto(id);
-            CardProdutoDTO card = new CardProdutoDTO();
-            while(rs.next()) {
-                System.out.println(rs.getString("nome_produto"));
-                card.setId_produto(rs.getLong("id_produto"));
-                card.setFoto(rs.getString("foto"));
-                card.setValor_preco(rs.getDouble("valor_preco"));
-                card.setNome(rs.getString("nome_produto"));
-                card.setDesc(rs.getString("descricao"));
-            }
-            return card;
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+//        try{
+//            ResultSet rs =  this.produtoRepository.findCardProdutoById_produto(id);
+//            CardProdutoDTO card = new CardProdutoDTO();
+//            while(rs.next()) {
+//                System.out.println(rs.getString("nome_produto"));
+//                card.setId_produto(rs.getLong("id_produto"));
+//                card.setFoto(rs.getString("foto"));
+//                card.setValor_preco(rs.getDouble("valor_preco"));
+//                card.setNome(rs.getString("nome_produto"));
+//                card.setDesc(rs.getString("descricao"));
+//            }
+//            return card;
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+//        Map<String, String> var = this.produtoRepository.findCardProdutoById_produto(id);
+//        System.out.println(var);
 
-        return null;
+        CardProdutoDTO var = this.produtoRepository.findCardProdutoById_produto(id);
+        System.out.println(var);
+
+
+
+        return var;
     }
+
     public List<ProdutoDTO> findAllProduto(){
         List<Produto> allList = produtoRepository.findAll();
         return this.listToProdutoDto(allList);

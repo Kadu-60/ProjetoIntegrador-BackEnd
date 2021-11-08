@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.model.entity;
 
+import br.com.rd.ProjetoIntegrador.model.dto.Card.CardProdutoDTO;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,6 +8,19 @@ import java.util.Date;
 
 @Entity
 @Data
+@SqlResultSetMapping(
+        name = "CardProdutoDTO",
+        classes =  @ConstructorResult(
+                        targetClass = CardProdutoDTO.class, // nombre de la clase actual
+                        columns = {
+                                @ColumnResult(name = "id_produto", type = Long.class),
+                                @ColumnResult(name = "foto"),
+                                @ColumnResult(name = "nome_produto"),
+                                @ColumnResult(name = "descricao"),
+                                @ColumnResult(name = "valor_preco")
+                        }
+                )
+)
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
