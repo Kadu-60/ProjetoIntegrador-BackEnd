@@ -6,6 +6,7 @@ import br.com.rd.ProjetoIntegrador.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,25 @@ public class ProdutoService {
         return this.businessToDto(newProduto);
     }
 
+    public CardProdutoDTO findCardProdutoById_produto(Long id){
+        try{
+            ResultSet rs =  this.produtoRepository.findCardProdutoById_produto(id);
+            CardProdutoDTO card = new CardProdutoDTO();
+            while(rs.next()) {
+                System.out.println(rs.getString("nome_produto"));
+                card.setId_produto(rs.getLong("id_produto"));
+                card.setFoto(rs.getString("foto"));
+                card.setValor_preco(rs.getDouble("valor_preco"));
+                card.setNome(rs.getString("nome_produto"));
+                card.setDesc(rs.getString("descricao"));
+            }
+            return card;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
+        return null;
+    }
     public List<ProdutoDTO> findAllProduto(){
         List<Produto> allList = produtoRepository.findAll();
         return this.listToProdutoDto(allList);
@@ -236,7 +255,7 @@ public class ProdutoService {
     }
 
 
-    public Produto dtoToBusiness (ProdutoDTO dto){
+    private Produto dtoToBusiness (ProdutoDTO dto){
         Produto business = new Produto();
 
         business.setNome_produto(dto.getNome_produto());

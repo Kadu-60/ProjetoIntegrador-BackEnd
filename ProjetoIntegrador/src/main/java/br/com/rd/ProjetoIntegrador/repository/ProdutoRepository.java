@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.repository;
 
+import br.com.rd.ProjetoIntegrador.model.dto.CardProdutoDTO;
 import br.com.rd.ProjetoIntegrador.model.dto.ProdutoDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.Cartao;
 import br.com.rd.ProjetoIntegrador.model.entity.Produto;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 @Repository
@@ -32,4 +34,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long>, Produto
     List<Produto> buscaNovidades();
 
     List<Produto> findByDestaqueTrue();
+
+    @Query(value= "select pv.id_produto, foto, nome_produto, descricao, pv.valor_preco from produto p inner join preco_venda pv on (p.id_produto =pv.id_produto) where pv.id_produto = :id order by pv.data_vigencia limit 1", nativeQuery = true)
+    ResultSet findCardProdutoById_produto(@Param("id")Long id_produto);
 }

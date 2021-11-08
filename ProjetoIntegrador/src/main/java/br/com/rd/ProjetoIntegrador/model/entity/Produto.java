@@ -29,6 +29,8 @@ public class Produto {
     private Boolean destaque;
     @Column(nullable = false)
     private Date dataDeCriacao;
+    @Column(nullable = false)
+    private String foto;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_familia")
     private Familia familia;
