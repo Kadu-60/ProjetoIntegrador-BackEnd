@@ -22,8 +22,7 @@ public class ProdutoService {
     MarcaRepository marcaRepository;
     @Autowired
     PratoRepository pratoRepository;
-//    @Autowired
-//    CardRepository cardRepository;
+
 
 
     public ProdutoDTO addProduto(ProdutoDTO produto){
@@ -55,30 +54,11 @@ public class ProdutoService {
     }
 
     public CardProdutoDTO findCardProdutoById_produto(Long id){
-//        try{
-//            ResultSet rs =  this.produtoRepository.findCardProdutoById_produto(id);
-//            CardProdutoDTO card = new CardProdutoDTO();
-//            while(rs.next()) {
-//                System.out.println(rs.getString("nome_produto"));
-//                card.setId_produto(rs.getLong("id_produto"));
-//                card.setFoto(rs.getString("foto"));
-//                card.setValor_preco(rs.getDouble("valor_preco"));
-//                card.setNome(rs.getString("nome_produto"));
-//                card.setDesc(rs.getString("descricao"));
-//            }
-//            return card;
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
-//        Map<String, String> var = this.produtoRepository.findCardProdutoById_produto(id);
-//        System.out.println(var);
+        return this.produtoRepository.findCardProdutoById_produto(id);
+    }
 
-        CardProdutoDTO var = this.produtoRepository.findCardProdutoById_produto(id);
-        System.out.println(var);
-
-
-
-        return var;
+    public List<CardProdutoDTO> findCardsProfutoById_produto(List<Long> list_id){
+        return this.produtoRepository.findCardsProdutoById_produto(list_id);
     }
 
     public List<ProdutoDTO> findAllProduto(){
@@ -274,6 +254,7 @@ public class ProdutoService {
         business.setEan(dto.getEan());
         business.setDestaque(dto.getDestaque());
         business.setDataDeCriacao(dto.getDataDeCriacao());
+        business.setFoto(dto.getFoto());
 
         if (dto.getFamilia() != null){
             Familia f = new Familia();
@@ -327,7 +308,7 @@ public class ProdutoService {
         dto.setEan(business.getEan());
         dto.setDestaque(business.getDestaque());
         dto.setDataDeCriacao(business.getDataDeCriacao());
-
+        dto.setFoto(business.getFoto());
         if (business.getFamilia() != null){
             FamiliaDTO familiaDTO = new FamiliaDTO();
             familiaDTO.setId_familia(business.getFamilia().getId_familia());

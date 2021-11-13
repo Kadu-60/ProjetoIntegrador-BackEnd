@@ -36,8 +36,8 @@ public class PedidoController {
         return this.pedidoService.updateStatusById(spd,id);
     }
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        this.pedidoService.deleteById(id);
+    public void cancelamentoDePedido(@PathVariable("id") Long id){
+        this.pedidoService.canceleById(id);
     }
     @PostMapping
     public PedidoDTO create(@RequestBody PedidoDTO dto){

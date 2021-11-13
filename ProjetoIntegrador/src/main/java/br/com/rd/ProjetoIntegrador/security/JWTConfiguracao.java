@@ -2,6 +2,7 @@ package br.com.rd.ProjetoIntegrador.security;
 
 import br.com.rd.ProjetoIntegrador.service.DetalheClienteServiceImpl;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,18 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+import java.util.List;
+
+@Configuration
 @EnableWebSecurity
-public class JWTConfiguração extends WebSecurityConfigurerAdapter {
+public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
 
     private final DetalheClienteServiceImpl clienteService;
     private final PasswordEncoder passwordEncoder;
 
 
-    public JWTConfiguração(DetalheClienteServiceImpl clienteService, PasswordEncoder passwordEncoder) {
+    public JWTConfiguracao(DetalheClienteServiceImpl clienteService, PasswordEncoder passwordEncoder) {
         this.clienteService = clienteService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -33,6 +39,7 @@ public class JWTConfiguração extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/login", "/cadastroCliente/salvar"
@@ -44,18 +51,23 @@ public class JWTConfiguração extends WebSecurityConfigurerAdapter {
                         ,"/produtos/buscar/{id}","/formulariocontato/").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .cors().configurationSource(corsConfigurationSource()).and()
                 .addFilter(new JWTAutenticarFilter(authenticationManager()))
                 .addFilter(new JWTValidarFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource(){
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    public CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setExposedHeaders(List.of("Authorization"));
 
-        CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
-
         return source;
     }
 

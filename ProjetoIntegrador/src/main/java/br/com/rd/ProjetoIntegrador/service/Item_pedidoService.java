@@ -23,6 +23,8 @@ public class Item_pedidoService {
     PedidoRepository pedidoRepository;
     @Autowired
     EstoqueService estoqueService;
+    @Autowired
+    PrecoService precoService;
 
 
     public Item_pedidoDTO create(Item_pedidoDTO item_pedidoDTO){
@@ -37,6 +39,9 @@ public class Item_pedidoService {
         if(item_pedidoDTO.getItem_pedido_key()!=null){
             item_pedido.setItem_pedido_key(new Item_pedido_key());
             if(item_pedidoDTO.getItem_pedido_key().getPedido()!=null){
+                if(item_pedidoDTO.getItem_pedido_key().getPedido().getFinalizado()){
+                    return null;
+                }
                 if(this.pedidoRepository.existsById(item_pedidoDTO.getItem_pedido_key().getPedido().getId())){
                     item_pedido.getItem_pedido_key().setPedido(this.pedidoRepository.getById(item_pedidoDTO.getItem_pedido_key().getPedido().getId()));
                 }
@@ -46,6 +51,11 @@ public class Item_pedidoService {
             }
         }
         if(this.consultaEstoque(item_pedido.getProduto().getId_produto(), item_pedido.getQuantidade_produto())){
+            //a ideia aqui é setar o valor do Total e SubTotal no pedido;
+            Preco_VendaDTO pv = this.precoService.findLastPriceById_produto(item_pedido.getProduto().getId_produto());
+            item_pedido.getItem_pedido_key().getPedido().setTotal(item_pedido.getItem_pedido_key().getPedido().getTotal()+pv.getValor_preco());
+            item_pedido.getItem_pedido_key().getPedido().setSubtotal(item_pedido.getItem_pedido_key().getPedido().getSubtotal()+pv.getValor_preco());
+            item_pedido.getItem_pedido_key().setPedido(this.pedidoRepository.save(item_pedido.getItem_pedido_key().getPedido()));
             return this.businessToDto(this.item_pedidoRepository.save(item_pedido));
         }else{
             return null;

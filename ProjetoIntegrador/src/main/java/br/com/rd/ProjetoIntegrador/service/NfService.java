@@ -113,9 +113,9 @@ public class NfService {
         return null;
     }
 
-    public void deletarPorId(Long id){
-        nfRepository.deleteById(id);
-    }
+//    public void deletarPorId(Long id){
+//        nfRepository.deleteById(id);
+//    }não se deve deletar uma NF
 
     private NfDTO businessToDTO (Nf business){
         NfDTO dto = new NfDTO();
