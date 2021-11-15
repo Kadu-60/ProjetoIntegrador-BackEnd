@@ -12,4 +12,8 @@ public class Marca {
     private Long id_marca;
     @Column(nullable = false)
     private String nome;
+    @Column(nullable = false)
+    private String img;
+    @Column(nullable = false)
+    private String desc;
 }

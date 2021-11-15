@@ -281,7 +281,8 @@ public class ProdutoService {
                 m.setId_marca(dto.getMarca().getId_marca());
             }else  {
                 m.setNome(dto.getMarca().getNome());
-            }
+                m.setDesc(dto.getMarca().getDesc());
+                m.setImg(dto.getMarca().getImg());           }
             business.setMarca(m);
         }
         if (dto.getPrato() != null){
@@ -327,6 +328,8 @@ public class ProdutoService {
             MarcaDTO marcaDTO = new MarcaDTO();
             marcaDTO.setId_marca(business.getMarca().getId_marca());
             marcaDTO.setNome(business.getMarca().getNome());
+            marcaDTO.setDesc(business.getMarca().getDesc());
+            marcaDTO.setImg(business.getMarca().getImg());
             dto.setMarca(marcaDTO);
         }
 
