@@ -5,6 +5,7 @@ import br.com.rd.ProjetoIntegrador.service.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class EnderecoController {
         return this.enderecoService.findById(id);
     }
     @PostMapping
-    public EnderecoDTO create(@RequestBody EnderecoDTO dto ){
+    public EnderecoDTO create(@Valid @RequestBody EnderecoDTO dto ){
         return this.enderecoService.create(dto);
     }
     @PutMapping("{id}")

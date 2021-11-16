@@ -2,6 +2,7 @@ package br.com.rd.ProjetoIntegrador.service;
 
 import br.com.rd.ProjetoIntegrador.model.dto.ClienteDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.Cliente;
+import br.com.rd.ProjetoIntegrador.model.entity.EmailModel;
 import br.com.rd.ProjetoIntegrador.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,8 @@ public class ClienteService {
 
     @Autowired
     ClienteRepository clienteRepository;
+    @Autowired
+    EmailService emailService;
 
     private ClienteDTO clienteToDto (Cliente businessCliente) {
         ClienteDTO dtoCliente = new ClienteDTO();
@@ -40,6 +43,13 @@ public class ClienteService {
     public ClienteDTO criarCliente (ClienteDTO cliente) {
         Cliente novoCliente = this.dtoToCliente(cliente);
         novoCliente = clienteRepository.save(novoCliente);
+        EmailModel em = new EmailModel();
+        em.setEmailFrom("projetodevbrew@gmail.com");
+        em.setEmailTo(novoCliente.getEmail());
+        em.setSubject("Criacao de conta na devbrew");
+        em.setText("Muito obrigado por criar sua conta com a gente");
+        em.setOwnerRef("projetodevbrew@gmail.com");
+        this.emailService.sendEmail(em);
         return this.clienteToDto(novoCliente);
     }
 

@@ -49,9 +49,8 @@ public class EstoqueService {
     public EstoqueDTO getById(Long id_produto){
 
         if(this.produtoRepository.existsById(id_produto)){
-            Produto produto=this.produtoRepository.getById(id_produto);
             Estoquekey ek = new Estoquekey();
-            ek.setProduto(produto);
+            ek.setProduto(this.produtoRepository.findById(id_produto).get());
             if(estoqueRepository.existsById(ek)){
                 return this.busToDTO(estoqueRepository.getById(ek));
             }

@@ -39,18 +39,22 @@ public class Item_pedidoService {
         if(item_pedidoDTO.getItem_pedido_key()!=null){
             item_pedido.setItem_pedido_key(new Item_pedido_key());
             if(item_pedidoDTO.getItem_pedido_key().getPedido()!=null){
-                if(item_pedidoDTO.getItem_pedido_key().getPedido().getFinalizado()){
-                    return null;
-                }
+
                 if(this.pedidoRepository.existsById(item_pedidoDTO.getItem_pedido_key().getPedido().getId())){
                     item_pedido.getItem_pedido_key().setPedido(this.pedidoRepository.getById(item_pedidoDTO.getItem_pedido_key().getPedido().getId()));
+                }
+                if(item_pedidoDTO.getItem_pedido_key().getPedido().getFinalizado()!=null){
+                    if(item_pedidoDTO.getItem_pedido_key().getPedido().getFinalizado()){
+                        return null;
+                    }
+
                 }
             }
             if(item_pedidoDTO.getItem_pedido_key().getItem()!=null){
                 item_pedido.getItem_pedido_key().setId_item(item_pedidoDTO.getItem_pedido_key().getItem());
             }
         }
-        if(this.consultaEstoque(item_pedido.getProduto().getId_produto(), item_pedido.getQuantidade_produto())){
+        if(this.consultaEstoque(item_pedidoDTO.getProduto().getId_produto(), item_pedidoDTO.getQuantidade_produto())){
             //a ideia aqui é setar o valor do Total e SubTotal no pedido;
             Preco_VendaDTO pv = this.precoService.findLastPriceById_produto(item_pedido.getProduto().getId_produto());
             item_pedido.getItem_pedido_key().getPedido().setTotal(item_pedido.getItem_pedido_key().getPedido().getTotal()+pv.getValor_preco());
@@ -63,7 +67,9 @@ public class Item_pedidoService {
 
     }
     private Boolean consultaEstoque(Long id_produto, Integer quantidade){
-        Integer qtdEmEstoque=this.estoqueService.getById(id_produto).getQuantidade();
+
+        EstoqueDTO estoque = estoqueService.getById(id_produto);
+        Integer qtdEmEstoque = estoque.getQuantidade();
         Boolean b = qtdEmEstoque>=quantidade;
         if(b){
             EstoqueDTO estoqueDTO=new EstoqueDTO();

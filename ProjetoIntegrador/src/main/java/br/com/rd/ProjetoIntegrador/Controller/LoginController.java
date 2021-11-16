@@ -31,6 +31,17 @@ public class LoginController {
         cliente.setPassword(encoder.encode(cliente.getPassword()));
         return ResponseEntity.ok(repository.save(cliente));
     }
+    @PutMapping("/alterarSenha")
+    public ResponseEntity<Cliente> alterarSenha(@RequestBody  Cliente cliente){
+
+        if(repository.existsById(cliente.getId_Cliente()) && cliente.getPassword()!=null ){
+            Cliente c2 = repository.getById(cliente.getId_Cliente());
+            c2.setPassword(encoder.encode(cliente.getPassword()));
+            return ResponseEntity.ok(repository.save(c2));
+        }
+
+        return null;
+    }
 
     @GetMapping("/validarSenha")
     public ResponseEntity<Boolean> validarSenha(@RequestParam String email,

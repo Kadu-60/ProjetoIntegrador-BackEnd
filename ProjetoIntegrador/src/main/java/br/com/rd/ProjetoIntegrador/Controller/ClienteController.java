@@ -3,11 +3,14 @@ package br.com.rd.ProjetoIntegrador.Controller;
 import br.com.rd.ProjetoIntegrador.model.dto.ClienteDTO;
 
 import br.com.rd.ProjetoIntegrador.service.ClienteService;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.auth0.jwt.JWT;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cadastro-cliente")

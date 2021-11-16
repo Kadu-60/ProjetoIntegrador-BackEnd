@@ -30,6 +30,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long>, Produto
     @Query(value = "SELECT * FROM PRODUTO P ORDER BY P.data_de_criacao asc LIMIT 5", nativeQuery = true)
     List<Produto> buscaNovidades();
 
+    @Query(value = "select * from produto p where p.destaque = true limit 10", nativeQuery = true)
     List<Produto> findByDestaqueTrue();
 
 //    @Query(value= "select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco from produto p inner join preco_venda pv on (p.id_produto =pv.id_produto) where pv.id_produto = :id order by pv.data_vigencia limit 1", nativeQuery = true)

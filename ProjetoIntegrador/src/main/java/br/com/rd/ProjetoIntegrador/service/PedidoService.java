@@ -32,6 +32,8 @@ public class PedidoService {
     PrecoService precoService;
     @Autowired
     Item_NfRepository item_nfRepository;
+    @Autowired
+    EmailService emailService;
 
     public PedidoDTO create(PedidoDTO dto){
         Pedido pedido = this.dtoToBusiness(dto);
@@ -59,6 +61,7 @@ public class PedidoService {
         pedido.setDataDeCriacao(new Date());
         pedido.setTotal(0d);
         pedido.setSubtotal(0d);
+        pedido.setFinalizado(false);
         pedido = this.pedidoRepository.save(pedido);
         return this.businessToDTO(pedido);
     }
@@ -83,7 +86,7 @@ public class PedidoService {
     public NfDTO gerarNf(PedidoDTO pedidoDTO){
         if(pedidoRepository.existsById(pedidoDTO.getId())){
 
-            Pedido pedido = pedidoRepository.getById(pedidoDTO.getId());
+            Pedido pedido = pedidoRepository.findById(pedidoDTO.getId()).get();
             if(pedido.getNf()==null){
                 Nf business = new Nf();
                 business.setSerie(""+pedido.getId());
@@ -132,6 +135,20 @@ public class PedidoService {
                     this.item_nfRepository.save(item_nf);
                 }
 //            Criando os Itens NF apartir dos itens pedido
+//            Criando o Email de confirmação de Pedido
+                EmailModel em = new EmailModel();
+                em.setEmailFrom("projetodevbrew@gmail.com");
+                em.setEmailTo(pedido.getCliente().getEmail());
+                em.setSubject("Pedido "+pedido.getId());
+                em.setText("Muito obrigado por comprar com a gente");
+                em.setOwnerRef("projetodevbrew@gmail.com");
+                this.emailService.sendEmail(em);
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("\t\t\tEMAIL ENVIADO");
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------");
+//            Criando o Email de confirmação de Pedido
                 return dto;
             }else{
                 Nf business = pedido.getNf();
@@ -208,7 +225,7 @@ public class PedidoService {
 
     private Produto dtoToBusiness (ProdutoDTO dto){
         Produto business = new Produto();
-
+        business.setId_produto(dto.getId_produto());
         business.setNome_produto(dto.getNome_produto());
         business.setDescricao(dto.getDescricao());
         business.setIbu(dto.getIbu());
