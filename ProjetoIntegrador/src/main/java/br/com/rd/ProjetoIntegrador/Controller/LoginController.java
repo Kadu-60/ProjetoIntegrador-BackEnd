@@ -1,7 +1,10 @@
 package br.com.rd.ProjetoIntegrador.Controller;
 
 import br.com.rd.ProjetoIntegrador.model.entity.Cliente;
+import br.com.rd.ProjetoIntegrador.model.entity.EmailModel;
 import br.com.rd.ProjetoIntegrador.repository.ClienteRepository;
+import br.com.rd.ProjetoIntegrador.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +18,8 @@ import java.util.Optional;
 public class LoginController {
     private final ClienteRepository repository;
     private final PasswordEncoder encoder;
+    @Autowired
+    EmailService emailService;
 
     public LoginController(ClienteRepository repository, PasswordEncoder encoder) {
         this.repository = repository;
@@ -29,6 +34,13 @@ public class LoginController {
     @PostMapping("/salvar")
     public ResponseEntity<Cliente> salvar(@RequestBody Cliente cliente) {
         cliente.setPassword(encoder.encode(cliente.getPassword()));
+        EmailModel em = new EmailModel();
+        em.setEmailFrom("projetodevbrew@gmail.com");
+        em.setEmailTo(cliente.getEmail());
+        em.setSubject("Criacao de conta na devbrew");
+        em.setText("Muito obrigado por criar sua conta com a gente");
+        em.setOwnerRef("projetodevbrew@gmail.com");
+        this.emailService.sendEmail(em);
         return ResponseEntity.ok(repository.save(cliente));
     }
     @PutMapping("/alterarSenha")

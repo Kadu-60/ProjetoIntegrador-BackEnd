@@ -14,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/cadastro-cliente")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ClienteController {
 
     @Autowired
@@ -43,6 +44,16 @@ public class ClienteController {
     public ClienteDTO atualizarClientePorId (@RequestBody ClienteDTO clienteDTO, @PathVariable ("id_Cliente") Long id_Cliente){
         return  clienteService.atualizarClientePorId(clienteDTO, id_Cliente);
     }
+
+    @GetMapping("/getByEmail/{email}")
+    public ClienteDTO getByEmail(@PathVariable ("email") String email){
+        return  clienteService.getByEmail(email);
+    }
+    @GetMapping("/senha/{email}")
+    public void recuperarSenha(@PathVariable("email") String email){
+        clienteService.recuperarSenha(email);
+    }
+
 
 
 }

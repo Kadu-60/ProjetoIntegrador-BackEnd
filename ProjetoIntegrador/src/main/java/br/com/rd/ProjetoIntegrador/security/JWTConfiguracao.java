@@ -48,7 +48,7 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
                         ,"/produtos", "/produtos/{id}",
                         "/produtos/por-categoria/{id}", "/produtos/por-marca/{id}", "/produtos/por-familia/{id}"
                         , "/produtos/por-prato/{id}", "/Marca"
-                        ,"/produtos/buscar/{id}","/formulariocontato/").permitAll()
+                        ,"/produtos/buscar/{id}","/formulariocontato/","/cadastro-cliente/senha/{email}").permitAll()
                 .antMatchers(HttpMethod.PUT,"/cadastroCliente/alterarSenha").permitAll()
                 .anyRequest().authenticated()
                 .and()
