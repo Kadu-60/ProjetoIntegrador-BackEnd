@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Estoque")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EstoqueController {
     @Autowired
     EstoqueService estoqueService;

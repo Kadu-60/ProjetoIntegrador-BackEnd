@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/cadastroCliente")
+@CrossOrigin(origins = "http://localhost:3000")
 public class LoginController {
     private final ClienteRepository repository;
     private final PasswordEncoder encoder;
@@ -48,6 +49,18 @@ public class LoginController {
 
         if(repository.existsById(cliente.getId_Cliente()) && cliente.getPassword()!=null ){
             Cliente c2 = repository.getById(cliente.getId_Cliente());
+            c2.setPassword(encoder.encode(cliente.getPassword()));
+            return ResponseEntity.ok(repository.save(c2));
+        }
+
+        return null;
+    }
+
+    @PutMapping("/alterarSenha/{id}")
+    public ResponseEntity<Cliente> alterarSenha(@RequestBody  Cliente cliente, @PathVariable("id") Long id){
+
+        if(repository.existsById(id) && cliente.getPassword()!=null ){
+            Cliente c2 = repository.getById(id);
             c2.setPassword(encoder.encode(cliente.getPassword()));
             return ResponseEntity.ok(repository.save(c2));
         }

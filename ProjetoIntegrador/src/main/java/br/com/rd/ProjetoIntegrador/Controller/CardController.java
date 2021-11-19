@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Card")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CardController {
     @Autowired
     ProdutoService produtoService;

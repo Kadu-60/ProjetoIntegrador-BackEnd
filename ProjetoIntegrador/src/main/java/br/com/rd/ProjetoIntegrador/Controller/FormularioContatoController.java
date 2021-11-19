@@ -10,6 +10,7 @@ import java.util.List;
 
 @RequestMapping("/formulariocontato")
 @Controller
+@CrossOrigin(origins = "http://localhost:3000")
 public class FormularioContatoController {
 
     @Autowired

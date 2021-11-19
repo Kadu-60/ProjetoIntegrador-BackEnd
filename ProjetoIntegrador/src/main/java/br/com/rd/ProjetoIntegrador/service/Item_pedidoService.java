@@ -161,7 +161,7 @@ public class Item_pedidoService {
             dto.setEan(bussines.getProduto().getEan());
             dto.setDestaque(bussines.getProduto().getDestaque());
             dto.setDataDeCriacao(bussines.getProduto().getDataDeCriacao());
-
+            dto.setFoto(bussines.getProduto().getFoto());
             if (bussines.getProduto().getFamilia() != null){
                 FamiliaDTO familiaDTO = new FamiliaDTO();
                 familiaDTO.setId_familia(bussines.getProduto().getFamilia().getId_familia());
@@ -364,7 +364,7 @@ public class Item_pedidoService {
             business.setEan(dto.getProduto().getEan());
             business.setDestaque(dto.getProduto().getDestaque());
             business.setDataDeCriacao(dto.getProduto().getDataDeCriacao());
-
+            business.setFoto(dto.getProduto().getFoto());
             if (dto.getProduto().getFamilia() != null){
                 Familia f = new Familia();
                 if (dto.getProduto().getFamilia().getId_familia() != null){
