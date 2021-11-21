@@ -32,6 +32,8 @@ public class ProdutoController {
         return  produtoService.searchByProdutoId(id);
     }
 
+
+
     @GetMapping("/por-marca/{id}")
     public List<ProdutoDTO> findByMarca(@PathVariable ("id") Long id){
         return produtoService.listaProdutoMarca(id);

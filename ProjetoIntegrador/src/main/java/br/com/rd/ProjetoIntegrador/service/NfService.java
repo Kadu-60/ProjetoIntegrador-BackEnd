@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class NfService {
     ClienteRepository clienteRepository;
 
     public NfDTO addNf (NfDTO nf){
+        nf.setEmissao(new Date());
         Nf novaNf = this.dtoToBusiness(nf);
 
         if (novaNf.getCliente() != null){
@@ -111,9 +113,9 @@ public class NfService {
         return null;
     }
 
-    public void deletarPorId(Long id){
-        nfRepository.deleteById(id);
-    }
+//    public void deletarPorId(Long id){
+//        nfRepository.deleteById(id);
+//    }não se deve deletar uma NF
 
     private NfDTO businessToDTO (Nf business){
         NfDTO dto = new NfDTO();

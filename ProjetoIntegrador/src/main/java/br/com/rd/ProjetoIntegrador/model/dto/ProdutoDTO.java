@@ -16,7 +16,7 @@ public class ProdutoDTO {
     private String ean;
     private Boolean destaque;
     private Date dataDeCriacao;
-
+    private String foto;
     private FamiliaDTO familia;
     private CategoriaDTO categoria;
     private MarcaDTO marca;

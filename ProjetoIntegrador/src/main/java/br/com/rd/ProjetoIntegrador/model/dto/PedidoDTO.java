@@ -11,6 +11,7 @@ public class PedidoDTO {
     private Double total;
     private Date dataDeCriacao;
     private Double frete;
+    private Boolean finalizado;
 
     private ClienteDTO cliente;
     private NfDTO nf;

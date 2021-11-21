@@ -1,15 +1,13 @@
 package br.com.rd.ProjetoIntegrador.service;
 
 import br.com.rd.ProjetoIntegrador.model.dto.*;
+import br.com.rd.ProjetoIntegrador.model.dto.Card.CardProdutoDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.*;
 import br.com.rd.ProjetoIntegrador.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProdutoService {
@@ -24,6 +22,7 @@ public class ProdutoService {
     MarcaRepository marcaRepository;
     @Autowired
     PratoRepository pratoRepository;
+
 
 
     public ProdutoDTO addProduto(ProdutoDTO produto){
@@ -53,6 +52,28 @@ public class ProdutoService {
         newProduto = produtoRepository.save(newProduto);
         return this.businessToDto(newProduto);
     }
+
+    public CardProdutoDTO findCardProdutoById_produto(Long id){
+        return this.produtoRepository.findCardProdutoById_produto(id);
+    }
+
+    public List<CardProdutoDTO> findCardsProfutoById_produto(List<Long> list_id){
+        return this.produtoRepository.findCardsProdutoById_produto(list_id);
+    }
+
+    public List<CardProdutoDTO> findCardsProfutoByNovidade(){
+        return this.produtoRepository.findCardsProdutoByNovidade();
+    }
+
+    public List<CardProdutoDTO> findCardsProdutoByDestaques(){
+        return this.produtoRepository.findCardsProdutoByDestaques();
+    }
+
+    public List<CardProdutoDTO> findCardsProdutoByBusca(String busca){
+        return this.produtoRepository.findCardsProdutoByBusca(busca);
+    }
+
+
 
 
     public List<ProdutoDTO> findAllProduto(){
@@ -236,7 +257,7 @@ public class ProdutoService {
     }
 
 
-    public Produto dtoToBusiness (ProdutoDTO dto){
+    private Produto dtoToBusiness (ProdutoDTO dto){
         Produto business = new Produto();
 
         business.setNome_produto(dto.getNome_produto());
@@ -248,6 +269,7 @@ public class ProdutoService {
         business.setEan(dto.getEan());
         business.setDestaque(dto.getDestaque());
         business.setDataDeCriacao(dto.getDataDeCriacao());
+        business.setFoto(dto.getFoto());
 
         if (dto.getFamilia() != null){
             Familia f = new Familia();
@@ -274,7 +296,8 @@ public class ProdutoService {
                 m.setId_marca(dto.getMarca().getId_marca());
             }else  {
                 m.setNome(dto.getMarca().getNome());
-            }
+                m.setDescricao(dto.getMarca().getDesc());
+                m.setImg(dto.getMarca().getImg());           }
             business.setMarca(m);
         }
         if (dto.getPrato() != null){
@@ -301,7 +324,7 @@ public class ProdutoService {
         dto.setEan(business.getEan());
         dto.setDestaque(business.getDestaque());
         dto.setDataDeCriacao(business.getDataDeCriacao());
-
+        dto.setFoto(business.getFoto());
         if (business.getFamilia() != null){
             FamiliaDTO familiaDTO = new FamiliaDTO();
             familiaDTO.setId_familia(business.getFamilia().getId_familia());
@@ -320,6 +343,8 @@ public class ProdutoService {
             MarcaDTO marcaDTO = new MarcaDTO();
             marcaDTO.setId_marca(business.getMarca().getId_marca());
             marcaDTO.setNome(business.getMarca().getNome());
+            marcaDTO.setDesc(business.getMarca().getDescricao());
+            marcaDTO.setImg(business.getMarca().getImg());
             dto.setMarca(marcaDTO);
         }
 

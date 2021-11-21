@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.service;
 
+import br.com.rd.ProjetoIntegrador.model.Embeddeble.Item_Nf_Key;
 import br.com.rd.ProjetoIntegrador.model.dto.*;
 import br.com.rd.ProjetoIntegrador.model.entity.*;
 import br.com.rd.ProjetoIntegrador.repository.*;
@@ -21,6 +22,18 @@ public class PedidoService {
     ParcelamentoRepository parcelamentoRepository;
     @Autowired
     StatusPedidoRepository statusPedidoRepository;
+    @Autowired
+    NfRepository nfRepository;
+    @Autowired
+    Item_pedidoService item_pedidoService;
+    @Autowired
+    EstoqueService estoqueService;
+    @Autowired
+    PrecoService precoService;
+    @Autowired
+    Item_NfRepository item_nfRepository;
+    @Autowired
+    EmailService emailService;
 
     public PedidoDTO create(PedidoDTO dto){
         Pedido pedido = this.dtoToBusiness(dto);
@@ -38,14 +51,17 @@ public class PedidoService {
                 pedido.setParcelamento(m);
             }
         }
-        if(pedido.getStatusPedido()!=null){
-            Long id = pedido.getStatusPedido().getId_status_pedido();
+        if(pedido.getStatusEntrega()!=null){
+            Long id = pedido.getStatusEntrega().getId_status_pedido();
             if(id!=null){
                 StatusPedido m = this.statusPedidoRepository.getById(id);
-                pedido.setStatusPedido(m);
+                pedido.setStatusEntrega(m);
             }
         }
         pedido.setDataDeCriacao(new Date());
+        pedido.setTotal(0d);
+        pedido.setSubtotal(0d);
+        pedido.setFinalizado(false);
         pedido = this.pedidoRepository.save(pedido);
         return this.businessToDTO(pedido);
     }
@@ -56,21 +72,130 @@ public class PedidoService {
         if(op.isPresent()){
             Pedido obj = op.get();
             if(sp.getId_status_pedido()!= null) {
-                obj.setStatusPedido(this.statusPedidoRepository.getById(sp.getId_status_pedido()));
+                obj.setStatusEntrega(this.statusPedidoRepository.getById(sp.getId_status_pedido()));
             }else{
                 StatusPedido spbus = new StatusPedido();
                 spbus.setEstado_pedido(sp.getEstado_pedido());
-                obj.setStatusPedido(spbus);
+                obj.setStatusEntrega(spbus);
             }
             pedidoRepository.save(obj);
             return businessToDTO(obj);
         }
         return null;
     }
-    public void deleteById(Long id){
-        if(pedidoRepository.existsById(id)){
-            pedidoRepository.deleteById(id);
+    public NfDTO gerarNf(PedidoDTO pedidoDTO){
+        if(pedidoRepository.existsById(pedidoDTO.getId())){
+
+            Pedido pedido = pedidoRepository.findById(pedidoDTO.getId()).get();
+            if(pedido.getNf()==null){
+                Nf business = new Nf();
+                business.setSerie(""+pedido.getId());
+                business.setChave_acesso(pedido.getId());
+                business.setSubtotal(pedido.getSubtotal());
+                business.setTotal(pedido.getTotal());
+                business.setCliente(pedido.getCliente());
+                business.setEmissao(new Date());
+                business = nfRepository.save(business);
+                pedido.setNf(business);
+                pedido.setFinalizado(true);
+                this.pedidoRepository.save(pedido);
+//            Conversão de nf business to nf dto
+                NfDTO dto = new NfDTO();
+                dto.setId_nf(business.getId_nf());
+                dto.setChave_acesso(business.getChave_acesso());
+                dto.setSerie(business.getSerie());
+                dto.setEmissao(business.getEmissao());
+                dto.setSubtotal(business.getSubtotal());
+                dto.setTotal(business.getTotal());
+                if (business.getCliente() != null){
+                    ClienteDTO clienteDTO = new ClienteDTO();
+                    clienteDTO.setId_Cliente(business.getCliente().getId_Cliente());
+                    clienteDTO.setNome(business.getCliente().getNome());
+                    clienteDTO.setCpf(business.getCliente().getCpf());
+                    clienteDTO.setEmail(business.getCliente().getEmail());
+                    clienteDTO.setTelefone(business.getCliente().getTelefone());
+                    clienteDTO.setDataNascimento(business.getCliente().getDataNascimento());
+                    dto.setCliente(clienteDTO);
+                }
+//            Conversão de nf business to nf dto
+//            Criando os Itens NF apartir dos itens pedido
+                List<Item_pedidoDTO> listItens = this.item_pedidoService.findByidpedido(pedido.getId());
+                for(Item_pedidoDTO item : listItens){
+                    Item_Nf item_nf = new Item_Nf();
+                    item_nf.setItem_nf_key(new Item_Nf_Key());
+                    item_nf.getItem_nf_key().setId_item(item.getItem_pedido_key().getItem());
+                    item_nf.getItem_nf_key().setNf(business);
+                    item_nf.setProduto(this.dtoToBusiness(item.getProduto()));
+                    item_nf.setCofins(0d);
+                    item_nf.setIcms(0d);
+                    item_nf.setValor_unitario(this.precoService.findLastPriceById_produto(item.getProduto().getId_produto()).getValor_preco());
+                    item_nf.setValor_total((this.precoService.findLastPriceById_produto(item.getProduto().getId_produto()).getValor_preco()*item.getQuantidade_produto()));
+                    item_nf.setQuantidade_produto(item.getQuantidade_produto());
+                    item_nf.setDesconto_produto(0d);
+                    this.item_nfRepository.save(item_nf);
+                }
+//            Criando os Itens NF apartir dos itens pedido
+//            Criando o Email de confirmação de Pedido
+                EmailModel em = new EmailModel();
+                em.setEmailFrom("projetodevbrew@gmail.com");
+                em.setEmailTo(pedido.getCliente().getEmail());
+                em.setSubject("Pedido "+pedido.getId());
+                em.setText("Muito obrigado por comprar com a gente");
+                em.setOwnerRef("projetodevbrew@gmail.com");
+                this.emailService.sendEmail(em);
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("\t\t\tEMAIL ENVIADO");
+                System.out.println("-------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------");
+//            Criando o Email de confirmação de Pedido
+                return dto;
+            }else{
+                Nf business = pedido.getNf();
+//            Conversão de nf business to nf dto
+                NfDTO dto = new NfDTO();
+                dto.setId_nf(business.getId_nf());
+                dto.setChave_acesso(business.getChave_acesso());
+                dto.setSerie(business.getSerie());
+                dto.setEmissao(business.getEmissao());
+                dto.setSubtotal(business.getSubtotal());
+                dto.setTotal(business.getTotal());
+                if (business.getCliente() != null){
+                    ClienteDTO clienteDTO = new ClienteDTO();
+                    clienteDTO.setId_Cliente(business.getCliente().getId_Cliente());
+                    clienteDTO.setNome(business.getCliente().getNome());
+                    clienteDTO.setCpf(business.getCliente().getCpf());
+                    clienteDTO.setEmail(business.getCliente().getEmail());
+                    clienteDTO.setTelefone(business.getCliente().getTelefone());
+                    clienteDTO.setDataNascimento(business.getCliente().getDataNascimento());
+                    dto.setCliente(clienteDTO);
+                }
+//            Conversão de nf business to nf dto
+                return dto;
+            }
+
         }
+        return null;
+    }
+    public void canceleById(Long id){
+        if(this.pedidoRepository.existsById(id)){
+            Pedido pedido= this.pedidoRepository.getById(id);
+            pedido.setSubtotal(0d);//setando subtotal pra 0
+            pedido.setTotal(0d);//setando total pra 0
+            pedido.setFinalizado(true);//setando finalizado para true para que não se possa mais inserir nenhum item a este pedido
+            pedido.getStatusEntrega().setEstado_pedido("Cancelado");
+            this.pedidoRepository.save(pedido);
+            List<Item_pedidoDTO> ip= this.item_pedidoService.findByidpedido(id);
+            for(Item_pedidoDTO item: ip){
+                ProdutoDTO p = item.getProduto();
+                int qtd = item.getQuantidade_produto();
+                EstoqueDTO estoque = this.estoqueService.getById(p.getId_produto());
+                estoque.setQuantidade((estoque.getQuantidade()+qtd));
+                this.estoqueService.update(estoque,p.getId_produto());
+            }
+
+        }
+
     }
 
     public List<PedidoDTO> findAll(){
@@ -98,12 +223,91 @@ public class PedidoService {
 
 
 
+    private Produto dtoToBusiness (ProdutoDTO dto){
+        Produto business = new Produto();
+        business.setId_produto(dto.getId_produto());
+        business.setNome_produto(dto.getNome_produto());
+        business.setDescricao(dto.getDescricao());
+        business.setIbu(dto.getIbu());
+        business.setCor(dto.getCor());
+        business.setTeor(dto.getTeor());
+        business.setQuantidade_ml(dto.getQuantidade_ml());
+        business.setEan(dto.getEan());
+        business.setDestaque(dto.getDestaque());
+        business.setDataDeCriacao(dto.getDataDeCriacao());
+        business.setFoto(dto.getFoto());
+
+        if (dto.getFamilia() != null){
+            Familia f = new Familia();
+            if (dto.getFamilia().getId_familia() != null){
+                f.setId_familia(dto.getFamilia().getId_familia());
+            }else{
+                f.setDescricao(dto.getFamilia().getDescricao());
+            }
+            business.setFamilia(f);
+        }
+        if (dto.getCategoria() != null){
+            Categoria c = new Categoria();
+            if (dto.getCategoria().getId_Categoria() != null){
+                c.setId_Categoria(dto.getCategoria().getId_Categoria());
+            }else {
+                c.setNome(dto.getCategoria().getNome());
+            }
+            business.setCategoria(c);
+        }
+
+        if (dto.getMarca() != null){
+            Marca m = new Marca();
+            if (dto.getMarca().getId_marca() != null){
+                m.setId_marca(dto.getMarca().getId_marca());
+            }else  {
+                m.setNome(dto.getMarca().getNome());
+            }
+            business.setMarca(m);
+        }
+        if (dto.getPrato() != null){
+            Prato p = new Prato();
+            if (dto.getPrato().getId_prato() != null){
+                p.setId_prato(dto.getPrato().getId_prato());
+            }else  {
+                p.setDescricao(dto.getPrato().getDescricao());
+            }
+            business.setPrato(p);
+        }
+        return business;
+    }
+
+    private Nf dtoToBusiness (NfDTO dto){
+        Nf business = new Nf();
+        business.setChave_acesso(dto.getChave_acesso());
+        business.setSerie(dto.getSerie());
+        business.setEmissao(dto.getEmissao());
+        business.setSubtotal(dto.getSubtotal());
+        business.setTotal(dto.getTotal());
+        if (dto.getCliente() != null){
+            Cliente cliente = new Cliente();
+            if (dto.getCliente().getId_Cliente() != null){
+                cliente.setId_Cliente(dto.getCliente().getId_Cliente());
+            }else{
+                cliente.setNome(dto.getCliente().getNome());
+                cliente.setCpf(dto.getCliente().getCpf());
+                cliente.setEmail(dto.getCliente().getEmail());
+                cliente.setTelefone(dto.getCliente().getTelefone());
+                cliente.setDataNascimento(dto.getCliente().getDataNascimento());
+            }
+            business.setCliente(cliente);
+        }
+        return business;
+
+    }
+
     private Pedido dtoToBusiness(PedidoDTO dto){
         Pedido bus = new Pedido();
         bus.setTotal(dto.getTotal());
         bus.setSubtotal(dto.getSubtotal());
         bus.setDataDeCriacao(dto.getDataDeCriacao());
         bus.setFrete(dto.getFrete());
+        bus.setFinalizado(dto.getFinalizado());
         if(dto.getCartao() != null){
             Cartao m = new Cartao();
             if(dto.getCartao().getId_Cartao() != null){
@@ -179,7 +383,7 @@ public class PedidoService {
             }else{
                 m.setEstado_pedido(dto.getStatus().getEstado_pedido());
             }
-            bus.setStatusPedido(m);
+            bus.setStatusEntrega(m);
         }
         return bus;
     }
@@ -192,6 +396,23 @@ public class PedidoService {
         dto.setSubtotal(bus.getSubtotal());
         dto.setDataDeCriacao(bus.getDataDeCriacao());
         dto.setFrete(bus.getFrete());
+        dto.setFinalizado(bus.getFinalizado());
+        if(bus.getNf()!=null){
+            dto.setNf(new NfDTO());
+            dto.getNf().setCliente(new ClienteDTO());
+            dto.getNf().setId_nf(bus.getNf().getId_nf());
+            dto.getNf().getCliente().setId_Cliente(bus.getCliente().getId_Cliente());
+            dto.getNf().getCliente().setTelefone(bus.getCliente().getTelefone());
+            dto.getNf().getCliente().setEmail(bus.getCliente().getEmail());
+            dto.getNf().getCliente().setNome(bus.getCliente().getNome());
+            dto.getNf().getCliente().setCpf(bus.getCliente().getCpf());
+            dto.getNf().getCliente().setDataNascimento(bus.getCliente().getDataNascimento());
+            dto.getNf().setTotal(bus.getNf().getTotal());
+            dto.getNf().setSubtotal(bus.getNf().getSubtotal());
+            dto.getNf().setEmissao(bus.getNf().getEmissao());
+            dto.getNf().setSerie(bus.getNf().getSerie());
+            dto.getNf().setChave_acesso(bus.getNf().getChave_acesso());
+        }
         if(bus.getCartao()!= null) {
             CartaoDTO cartao = new CartaoDTO();
             cartao.setId_Cartao(bus.getCartao().getId_Cartao());
@@ -229,10 +450,10 @@ public class PedidoService {
             formaPagamento.setParcelamento(bus.getParcelamento().getParcelamento());
             dto.setPagamento(formaPagamento);
         }
-        if(bus.getStatusPedido()!= null) {
+        if(bus.getStatusEntrega()!= null) {
             StatusPedidoDTO statusPedido = new StatusPedidoDTO();
-            statusPedido.setId_status_pedido(bus.getStatusPedido().getId_status_pedido());
-            statusPedido.setEstado_pedido(bus.getStatusPedido().getEstado_pedido());
+            statusPedido.setId_status_pedido(bus.getStatusEntrega().getId_status_pedido());
+            statusPedido.setEstado_pedido(bus.getStatusEntrega().getEstado_pedido());
             dto.setStatus(statusPedido);
         }
         return dto;
