@@ -22,6 +22,10 @@ public class CardController {
     public List<CardProdutoDTO> findCardsProfutoById_produto(@RequestBody List<Long> list){
         return this.produtoService.findCardsProfutoById_produto(list);
     }
+    @PostMapping("/multi")
+    public List<CardProdutoDTO> pfindCardsProfutoById_produto(@RequestBody List<Long> list){
+        return this.produtoService.findCardsProfutoById_produto(list);
+    }
 
     @GetMapping("/novidades")
     public List<CardProdutoDTO> findCardsProfutoByNovidade(){

@@ -17,7 +17,7 @@ public class FormularioContato {
     private String nome;
     @Column(nullable = true)
     @NotBlank(message = "telefone is mandatory")
-    private Integer telefone;
+    private String telefone;
     @Column(nullable = false)
     @NotBlank(message = "email is mandatory")
     private String email;

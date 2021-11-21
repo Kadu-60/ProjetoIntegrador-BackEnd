@@ -43,7 +43,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryCustom {
             ids+=" or pv.id_produto = "+id+" ";
             cont++;
         }
-        Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco from produto p inner join preco_venda pv on (p.id_produto =pv.id_produto) where "+ids+ " order by pv.data_vigencia desc, pv.id_produto limit "+cont,"CardProdutoDTO");
+        Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco, P.data_de_criacao, p.destaque from produto p inner join preco_venda pv on (p.id_produto =pv.id_produto) where "+ids+ " order by pv.data_vigencia desc, pv.id_produto limit "+cont,"CardProdutoDTO");
         List<CardProdutoDTO> listCard = q.getResultList();
         return listCard;
     }

@@ -73,6 +73,8 @@ public class MarcaService {
         MarcaDTO dto = new MarcaDTO();
         dto.setId_marca(business.getId_marca());
         dto.setNome(business.getNome());
+        dto.setImg(business.getImg());
+        dto.setDesc(business.getDescricao());
 
         return dto;
     }

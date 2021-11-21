@@ -4,7 +4,7 @@ public class FormularioContatoDTO {
 
     private Long id;
     private String nome;
-    private Integer telefone;
+    private String telefone;
     private String email;
     private String tipo_de_contato;
     private String assunto;
@@ -26,11 +26,11 @@ public class FormularioContatoDTO {
         this.nome = nome;
     }
 
-    public Integer getTelefone() {
+    public String getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(Integer telefone) {
+    public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 

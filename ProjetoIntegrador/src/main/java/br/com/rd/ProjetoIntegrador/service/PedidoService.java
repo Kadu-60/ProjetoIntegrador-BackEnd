@@ -59,8 +59,8 @@ public class PedidoService {
             }
         }
         pedido.setDataDeCriacao(new Date());
-        pedido.setTotal(0d);
-        pedido.setSubtotal(0d);
+        pedido.setTotal(15d);
+        pedido.setSubtotal(15d);
         pedido.setFinalizado(false);
         pedido = this.pedidoRepository.save(pedido);
         return this.businessToDTO(pedido);
