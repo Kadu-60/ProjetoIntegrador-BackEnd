@@ -30,6 +30,11 @@ public class ClienteController {
         clienteService.excluirCliente(id_Cliente);
     }
 
+    @GetMapping("/getByEmail/{email}")
+    public ClienteDTO getByEmail(@PathVariable ("email") String email){
+        return  clienteService.getByEmail(email);
+    }
+
     @GetMapping
     public List<ClienteDTO> findAllCliente(){
         return clienteService.findAllCliente();
@@ -43,6 +48,9 @@ public class ClienteController {
     public ClienteDTO atualizarClientePorId (@RequestBody ClienteDTO clienteDTO, @PathVariable ("id_Cliente") Long id_Cliente){
         return  clienteService.atualizarClientePorId(clienteDTO, id_Cliente);
     }
-
+    @GetMapping("/senha/{email}")
+    public void recuperarSenha(@PathVariable("email") String email){
+        clienteService.recuperarSenha(email);
+    }
 
 }

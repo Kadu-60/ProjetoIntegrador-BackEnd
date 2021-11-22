@@ -12,6 +12,6 @@ import java.util.List;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
-    @Query(value = " SELECT * FROM pedido P WHERE p.id_cliente :id ", nativeQuery = true)
+    @Query(value = " SELECT * FROM pedido P WHERE p.id_cliente= :id ", nativeQuery = true)
     public List<Pedido> findByIdCliente(@Param("id")Long id);
 }

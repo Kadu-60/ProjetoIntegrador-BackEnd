@@ -58,4 +58,15 @@ public class LoginController {
         HttpStatus status = (valid) ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(status).body(valid);
     }
+    @PutMapping("/alterarSenha/{id}")
+    public ResponseEntity<Cliente> alterarSenha(@RequestBody  Cliente cliente, @PathVariable("id") Long id){
+
+        if(repository.existsById(id) && cliente.getPassword()!=null ){
+            Cliente c2 = repository.getById(id);
+            c2.setPassword(encoder.encode(cliente.getPassword()));
+            return ResponseEntity.ok(repository.save(c2));
+        }
+
+        return null;
+    }
 }

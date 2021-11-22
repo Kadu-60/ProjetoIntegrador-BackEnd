@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.service;
 
+import br.com.rd.ProjetoIntegrador.Controller.LoginController;
 import br.com.rd.ProjetoIntegrador.model.dto.ClienteDTO;
 import br.com.rd.ProjetoIntegrador.model.entity.Cliente;
 import br.com.rd.ProjetoIntegrador.model.entity.EmailModel;
@@ -18,6 +19,8 @@ public class ClienteService {
     ClienteRepository clienteRepository;
     @Autowired
     EmailService emailService;
+    @Autowired
+    LoginController loginController;
 
     private ClienteDTO clienteToDto (Cliente businessCliente) {
         ClienteDTO dtoCliente = new ClienteDTO();
@@ -62,6 +65,28 @@ public class ClienteService {
     public List<ClienteDTO> findAllCliente(){
         List<Cliente> allCliente = clienteRepository.findAll();
         return this.listToClienteDto(allCliente);
+    }
+
+    public ClienteDTO getByEmail(String email){
+        Optional<Cliente> c =clienteRepository.findByEmail(email);
+        if(c.isPresent()){
+            return this.clienteToDto(c.get());
+        }
+        return null;
+    }
+
+    public void recuperarSenha(String email){
+        Optional<Cliente> c = clienteRepository.findByEmail(email);
+        c.get().setPassword("@4321");
+        loginController.alterarSenha(c.get());
+        EmailModel em = new EmailModel();
+        em.setEmailFrom("projetodevbrew@gmail.com");
+        em.setEmailTo(c.get().getEmail());
+        em.setSubject("Alteração de Senha na DevBrew");
+//        é necessário fazer a alteração desse email pegando a senha e descriptografando
+        em.setText("Senha: @4321");
+        em.setOwnerRef("projetodevbrew@gmail.com");
+        this.emailService.sendEmail(em);
     }
 
     public List<ClienteDTO> listToClienteDto(List<Cliente> listaCliente){
