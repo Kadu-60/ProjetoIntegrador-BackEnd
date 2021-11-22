@@ -26,7 +26,10 @@ public class CardController {
     public List<CardProdutoDTO> pfindCardsProfutoById_produto(@RequestBody List<Long> list){
         return this.produtoService.findCardsProfutoById_produto(list);
     }
-
+    @GetMapping("/{id_cat}/{id_marc}/{id_fam}/{id_prato}")
+    public List<CardProdutoDTO> findBuscaAvan(@PathVariable ("id_cat")Long id_cat, @PathVariable ("id_marc")Long id_marc, @PathVariable ("id_fam")Long id_fam, @PathVariable ("id_prato")Long id_prato){
+        return this.produtoService.buscaAvan(id_cat, id_marc, id_fam, id_prato);
+    }
     @GetMapping("/novidades")
     public List<CardProdutoDTO> findCardsProfutoByNovidade(){
         return this.produtoService.findCardsProfutoByNovidade();

@@ -53,10 +53,7 @@ public class ProdutoController {
         return produtoService.listaProdutoPrato(id);
     }
 
-    @GetMapping("/{id_cat}/{id_marc}/{id_fam}/{id_prato}")
-    public List<CardProdutoDTO> findBuscaAvan(@PathVariable ("id_cat")Long id_cat, @PathVariable ("id_marc")Long id_marc, @PathVariable ("id_fam")Long id_fam, @PathVariable ("id_prato")Long id_prato){
-        return this.produtoService.buscaAvan(id_cat, id_marc, id_fam, id_prato);
-    }
+
 
 
     @GetMapping("/buscar/{busca}")
