@@ -98,7 +98,7 @@ public class ProdutoService {
         }
         return null;
     }
-    public List<ProdutoDTO> buscaAvan(Long id_cat, Long id_marca, Long id_fam, Long id_prato){
+    public List<CardProdutoDTO> buscaAvan(Long id_cat, Long id_marca, Long id_fam, Long id_prato){
         String id_catSt;
         String id_marcaSt;
         String id_famSt;
@@ -126,7 +126,7 @@ public class ProdutoService {
         }else{
             id_pratoSt = "= "+id_prato;
         }
-        return this.listToProdutoDto(this.produtoRepository.buscaAvancada(id_catSt, id_marcaSt, id_famSt, id_pratoSt));
+        return this.produtoRepository.buscaAvancada(id_catSt, id_marcaSt, id_famSt, id_pratoSt);
     }
 
     public ProdutoDTO updateByProdutoId(ProdutoDTO dto, Long id){

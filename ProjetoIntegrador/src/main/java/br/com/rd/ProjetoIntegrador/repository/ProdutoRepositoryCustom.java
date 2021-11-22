@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProdutoRepositoryCustom {
-    List<Produto> buscaAvancada(String cat, String marc, String fam, String prato);
+    List<CardProdutoDTO> buscaAvancada(String cat, String marc, String fam, String prato);
 
     CardProdutoDTO findCardProdutoById_produto(Long id);
 
