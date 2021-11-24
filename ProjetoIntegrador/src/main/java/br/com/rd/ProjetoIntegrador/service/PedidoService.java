@@ -63,6 +63,20 @@ public class PedidoService {
         pedido.setSubtotal(15d);
         pedido.setFinalizado(false);
         pedido = this.pedidoRepository.save(pedido);
+//            Criando o Email de confirmação de Pedido
+        EmailModel em = new EmailModel();
+        em.setEmailFrom("projetodevbrew@gmail.com");
+        em.setEmailTo(pedido.getCliente().getEmail());
+        em.setSubject("Pedido "+pedido.getId());
+        em.setText("Muito obrigado por comprar com a gente");
+        em.setOwnerRef("projetodevbrew@gmail.com");
+        this.emailService.sendEmail(em);
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("\t\t\tEMAIL ENVIADO");
+        System.out.println("-------------------------------------------------------------------------------------");
+        System.out.println("-------------------------------------------------------------------------------------");
+//            Criando o Email de confirmação de Pedido
         return this.businessToDTO(pedido);
     }
 
