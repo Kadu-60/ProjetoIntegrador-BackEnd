@@ -44,6 +44,10 @@ public class CardController {
     public List<CardProdutoDTO> findCardsProdutoByBusca(@PathVariable("busca") String busca){
         return this.produtoService.findCardsProdutoByBusca(busca);
     }
+    @GetMapping("/Marca/{id}")
+    public List<CardProdutoDTO> findCardsProdutoByIdMarca(@PathVariable("id") Long id){
+        return this.produtoService.findCardsProdutoByIdMarca(id);
+    }
 
 
 }

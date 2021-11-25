@@ -16,5 +16,7 @@ public class Marca implements Serializable {
     @Column(nullable = false)
     private String img;
     @Column(nullable = false)
+    private String banner;
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String descricao;
 }

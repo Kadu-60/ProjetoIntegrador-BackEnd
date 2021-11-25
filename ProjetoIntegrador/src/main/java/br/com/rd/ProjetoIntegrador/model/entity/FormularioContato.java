@@ -27,7 +27,7 @@ public class FormularioContato {
     @Column(nullable = false)
     @NotBlank(message = "assunto is mandatory")
     private String assunto;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     @NotBlank(message = "mensagem is mandatory")
     private String mensagem;
 
