@@ -8,6 +8,6 @@ public class MarcaDTO {
     private String nome;
     private String img;
     private String desc;
-
+    private String banner;
     public MarcaDTO(){}
 }

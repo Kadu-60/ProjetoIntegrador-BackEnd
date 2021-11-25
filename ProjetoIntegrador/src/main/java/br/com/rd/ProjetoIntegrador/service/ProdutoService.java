@@ -193,6 +193,10 @@ public class ProdutoService {
                         pt.setMarca(marcaRepository.getById(dto.getMarca().getId_marca()));
                     }else{
                         marca.setNome(dto.getMarca().getNome());
+                        marca.setDescricao(dto.getMarca().getDesc());
+                        marca.setBanner(dto.getMarca().getBanner());
+                        marca.setId_marca(dto.getMarca().getId_marca());
+                        marca.setImg(dto.getMarca().getImg());
                         pt.setMarca(marca);
                         marcaRepository.save(pt.getMarca());
                     }

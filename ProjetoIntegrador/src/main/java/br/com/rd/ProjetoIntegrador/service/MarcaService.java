@@ -66,6 +66,10 @@ public class MarcaService {
     private Marca dtoToBusiness (MarcaDTO dto){
         Marca business = new Marca();
         business.setNome(dto.getNome());
+        business.setDescricao(dto.getDesc());
+        business.setBanner(dto.getBanner());
+        business.setId_marca(dto.getId_marca());
+        business.setImg(dto.getImg());
         return business;
     }
 
@@ -75,6 +79,7 @@ public class MarcaService {
         dto.setNome(business.getNome());
         dto.setImg(business.getImg());
         dto.setDesc(business.getDescricao());
+        dto.setBanner(business.getBanner());
 
         return dto;
     }
