@@ -68,6 +68,9 @@ public class ProdutoService {
     public List<CardProdutoDTO> findCardsProdutoByDestaques(){
         return this.produtoRepository.findCardsProdutoByDestaques();
     }
+    public List<CardProdutoDTO> findCardsProdutoByDestaquesAll(){
+        return this.produtoRepository.findCardsProdutoByDestaquesAll();
+    }
 
     public List<CardProdutoDTO> findCardsProdutoByBusca(String busca){
         return this.produtoRepository.findCardsProdutoByBusca(busca);
