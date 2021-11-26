@@ -66,6 +66,15 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryCustom {
         return listCard;
     }
     @Override
+    public List<CardProdutoDTO> findCardsProdutoByDestaquesAll() {
+
+
+        Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco, P.data_de_criacao, p.destaque from produto p inner join (select pv2.valor_preco, pv2.id_produto, pv2.data_vigencia from preco_venda as pv2 join (select valor_preco, id_produto, max(data_vigencia) as data_vigencia from preco_venda group by id_produto) as pv3 on pv3.id_produto = pv2.id_produto where pv3.data_vigencia = pv2.data_vigencia) pv on (p.id_produto =pv.id_produto) where p.destaque = true","CardProdutoDTO");
+        List<CardProdutoDTO> listCard = q.getResultList();
+        return listCard;
+    }
+
+    @Override
     public List<CardProdutoDTO> findCardsProdutoByIdMarca(Long id) {
         Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco, P.data_de_criacao, p.destaque from produto p inner join preco_venda pv on (p.id_produto =pv.id_produto) where p.id_marca = "+id+" order by pv.data_vigencia desc, pv.id_produto asc limit 10","CardProdutoDTO");
         List<CardProdutoDTO> listCard = q.getResultList();
@@ -83,6 +92,15 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryCustom {
     @Override
     public List<CardProdutoDTO> buscaAvancada(String cat, String marc, String fam, String prato) {
         Query q= entityManager.createNativeQuery("SELECT pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco,P.data_de_criacao, p.destaque FROM PRODUTO p inner join (select pv2.valor_preco, pv2.id_produto, pv2.data_vigencia from preco_venda as pv2 join (select valor_preco, id_produto, max(data_vigencia) as data_vigencia from preco_venda group by id_produto) as pv3 on pv3.id_produto = pv2.id_produto where pv3.data_vigencia = pv2.data_vigencia) pv on (p.id_produto =pv.id_produto) where id_categoria "+cat+"   AND id_marca "+marc+" AND id_familia "+fam+" AND id_prato "+prato+"", "CardProdutoDTO");
+        List<CardProdutoDTO> listCard = q.getResultList();
+        return listCard;
+    }
+
+    @Override
+    public List<CardProdutoDTO> findCardsProdutoAll() {
+
+
+        Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco, P.data_de_criacao, p.destaque from produto p inner join (select pv2.valor_preco, pv2.id_produto, pv2.data_vigencia from preco_venda as pv2 join (select valor_preco, id_produto, max(data_vigencia) as data_vigencia from preco_venda group by id_produto) as pv3 on pv3.id_produto = pv2.id_produto where pv3.data_vigencia = pv2.data_vigencia) pv on (p.id_produto =pv.id_produto) ORDER BY RAND ()","CardProdutoDTO");
         List<CardProdutoDTO> listCard = q.getResultList();
         return listCard;
     }
