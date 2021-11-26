@@ -96,4 +96,13 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryCustom {
         return listCard;
     }
 
+    @Override
+    public List<CardProdutoDTO> findCardsProdutoAll() {
+
+
+        Query q =entityManager.createNativeQuery("select pv.id_produto, p.foto, p.nome_produto, p.descricao, pv.valor_preco, P.data_de_criacao, p.destaque from produto p inner join (select pv2.valor_preco, pv2.id_produto, pv2.data_vigencia from preco_venda as pv2 join (select valor_preco, id_produto, max(data_vigencia) as data_vigencia from preco_venda group by id_produto) as pv3 on pv3.id_produto = pv2.id_produto where pv3.data_vigencia = pv2.data_vigencia) pv on (p.id_produto =pv.id_produto) ORDER BY RAND ()","CardProdutoDTO");
+        List<CardProdutoDTO> listCard = q.getResultList();
+        return listCard;
+    }
+
 }

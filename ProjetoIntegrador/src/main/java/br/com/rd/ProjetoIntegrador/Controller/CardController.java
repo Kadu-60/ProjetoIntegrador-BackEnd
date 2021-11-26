@@ -45,6 +45,12 @@ public class CardController {
         return this.produtoService.findCardsProdutoByDestaquesAll();
     }
 
+    @GetMapping("/todosProdutos")
+    public List<CardProdutoDTO> findCardsProdutoAll(){
+        return this.produtoService.findCardsProdutoAll();
+    }
+
+
     @GetMapping("/busca/{busca}")
     public List<CardProdutoDTO> findCardsProdutoByBusca(@PathVariable("busca") String busca){
         return this.produtoService.findCardsProdutoByBusca(busca);

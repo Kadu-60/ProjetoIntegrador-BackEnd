@@ -22,4 +22,7 @@ public interface ProdutoRepositoryCustom {
     List<CardProdutoDTO> findCardsProdutoByBusca(String busca);
 
     List<CardProdutoDTO> findCardsProdutoByIdMarca(Long id);
+
+    List<CardProdutoDTO> findCardsProdutoAll();
+
 }

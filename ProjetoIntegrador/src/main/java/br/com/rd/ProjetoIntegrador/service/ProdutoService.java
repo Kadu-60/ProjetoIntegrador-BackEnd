@@ -79,6 +79,10 @@ public class ProdutoService {
         return this.produtoRepository.findCardsProdutoByIdMarca(id);
     }
 
+    public List<CardProdutoDTO> findCardsProdutoAll(){
+        return this.produtoRepository.findCardsProdutoAll();
+    }
+
 
 
 
