@@ -12,4 +12,6 @@ public class Parcelamento {
     private Long id_parcelamento;
     @Column(nullable = false)
     private String parcelamento;
+    @Column(nullable = false)
+    private Integer qtdParcelas;
 }

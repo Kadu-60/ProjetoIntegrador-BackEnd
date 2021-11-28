@@ -20,12 +20,15 @@ public class ParcelamentoService {
         ParcelamentoDTO dtoParcelas = new ParcelamentoDTO();
         dtoParcelas.setId_parcelamento(businessParcelas.getId_parcelamento());
         dtoParcelas.setParcelamento(businessParcelas.getParcelamento());
+        dtoParcelas.setQtdParcelas(businessParcelas.getQtdParcelas());
         return dtoParcelas;
     }
 
     private Parcelamento dtoToParcelamento (ParcelamentoDTO dtoParcelas) {
         Parcelamento businessParcelas = new Parcelamento();
+        businessParcelas.setId_parcelamento(dtoParcelas.getId_parcelamento());
         businessParcelas.setParcelamento(dtoParcelas.getParcelamento());
+        businessParcelas.setQtdParcelas(dtoParcelas.getQtdParcelas());
         return businessParcelas;
     }
 

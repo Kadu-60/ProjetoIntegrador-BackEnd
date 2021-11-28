@@ -6,6 +6,7 @@ import lombok.Data;
 public class ParcelamentoDTO {
     private Long id_parcelamento;
     private String parcelamento;
+    private Integer qtdParcelas;
 
     public ParcelamentoDTO(){}
 }
