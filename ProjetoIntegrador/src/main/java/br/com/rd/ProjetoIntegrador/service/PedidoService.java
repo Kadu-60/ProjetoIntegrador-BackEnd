@@ -68,7 +68,7 @@ public class PedidoService {
         em.setEmailFrom("projetodevbrew@gmail.com");
         em.setEmailTo(pedido.getCliente().getEmail());
         em.setSubject("Pedido "+pedido.getId());
-        em.setText("Muito obrigado por comprar com a gente");
+        em.setText("É ótimo descobrir que os nossos clientes prezam pela qualidade e bom atendimento. \nObrigado por comprar com a gente.");
         em.setOwnerRef("projetodevbrew@gmail.com");
         this.emailService.sendEmail(em);
         System.out.println("-------------------------------------------------------------------------------------");
