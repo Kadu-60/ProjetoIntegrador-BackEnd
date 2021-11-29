@@ -60,7 +60,7 @@ public class PedidoService {
         }
         pedido.setDataDeCriacao(new Date());
         pedido.setTotal(15d);
-        pedido.setSubtotal(15d);
+        pedido.setSubtotal(0d);
         pedido.setFinalizado(false);
         pedido = this.pedidoRepository.save(pedido);
 //            Criando o Email de confirmação de Pedido
@@ -462,6 +462,7 @@ public class PedidoService {
             ParcelamentoDTO formaPagamento = new ParcelamentoDTO();
             formaPagamento.setId_parcelamento(bus.getParcelamento().getId_parcelamento());
             formaPagamento.setParcelamento(bus.getParcelamento().getParcelamento());
+            formaPagamento.setQtdParcelas(bus.getParcelamento().getQtdParcelas());
             dto.setPagamento(formaPagamento);
         }
         if(bus.getStatusEntrega()!= null) {
