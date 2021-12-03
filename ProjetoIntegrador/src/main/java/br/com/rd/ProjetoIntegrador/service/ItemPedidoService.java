@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class Item_pedidoService {
+public class ItemPedidoService {
     @Autowired
     Item_pedidoRepository item_pedidoRepository;
     @Autowired

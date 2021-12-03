@@ -12,7 +12,7 @@ public class FinalizarPedidoService {
     @Autowired
     PedidoService pedidoService;
     @Autowired
-    Item_pedidoService item_pedidoService;
+    ItemPedidoService item_pedidoService;
     public PedidoComArrayItemPedidoDTO finalizarPedido(PedidoComArrayItemPedidoDTO pedidoComArrayItemPedidoDTO) {
         PedidoComArrayItemPedidoDTO retorno = new PedidoComArrayItemPedidoDTO();
         retorno.setPedido(pedidoService.create(pedidoComArrayItemPedidoDTO.getPedido()));

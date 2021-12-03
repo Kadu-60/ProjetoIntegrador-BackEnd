@@ -27,6 +27,7 @@ public class Pedido {
 
 
 
+
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_nf", nullable = true)
     private Nf nf;
@@ -39,6 +40,9 @@ public class Pedido {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_endereco")
     private Endereco endereco;
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_metodoPag")
+    private MetodoPag metodoPag;
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_cartao")
     private Cartao cartao;

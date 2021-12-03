@@ -3,11 +3,8 @@ package br.com.rd.ProjetoIntegrador.Controller;
 import br.com.rd.ProjetoIntegrador.model.dto.Item_pedidoDTO;
 import br.com.rd.ProjetoIntegrador.model.dto.Item_pedido_keyDTO;
 import br.com.rd.ProjetoIntegrador.model.dto.PedidoDTO;
-import br.com.rd.ProjetoIntegrador.model.entity.Item_pedido;
-import br.com.rd.ProjetoIntegrador.service.Item_pedidoService;
+import br.com.rd.ProjetoIntegrador.service.ItemPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/item_pedido")
-public class Item_pedidoController {
+public class ItemPedidoController {
     @Autowired
-    Item_pedidoService item_pedidoService;
+    ItemPedidoService item_pedidoService;
 
     @GetMapping
     public List<Item_pedidoDTO> findAll(){

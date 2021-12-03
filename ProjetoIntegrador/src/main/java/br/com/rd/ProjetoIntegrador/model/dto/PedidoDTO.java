@@ -1,5 +1,6 @@
 package br.com.rd.ProjetoIntegrador.model.dto;
 
+import br.com.rd.ProjetoIntegrador.model.entity.MetodoPag;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ public class PedidoDTO {
     private Double frete;
     private Boolean finalizado;
 
+    private MetodoPagDTO metodoPag;
     private ClienteDTO cliente;
     private NfDTO nf;
     private ParcelamentoDTO pagamento;

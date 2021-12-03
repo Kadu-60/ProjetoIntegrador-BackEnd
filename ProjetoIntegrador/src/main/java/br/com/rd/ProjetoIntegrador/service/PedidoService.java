@@ -25,7 +25,7 @@ public class PedidoService {
     @Autowired
     NfRepository nfRepository;
     @Autowired
-    Item_pedidoService item_pedidoService;
+    ItemPedidoService item_pedidoService;
     @Autowired
     EstoqueService estoqueService;
     @Autowired
@@ -34,6 +34,8 @@ public class PedidoService {
     Item_NfRepository item_nfRepository;
     @Autowired
     EmailService emailService;
+    @Autowired
+    MetodoPagRepository metodoPagRepository;
 
     public PedidoDTO create(PedidoDTO dto){
         Pedido pedido = this.dtoToBusiness(dto);
@@ -49,6 +51,13 @@ public class PedidoService {
             if(id!=null){
                 Parcelamento m = this.parcelamentoRepository.getById(id);
                 pedido.setParcelamento(m);
+            }
+        }
+        if(pedido.getMetodoPag()!= null){
+            Long id = pedido.getMetodoPag().getId_metodoPag();
+            if(id!=null){
+                MetodoPag m = this.metodoPagRepository.getById(id);
+                pedido.setMetodoPag(m);
             }
         }
         if(pedido.getStatusEntrega()!=null){
@@ -317,6 +326,7 @@ public class PedidoService {
 
     private Pedido dtoToBusiness(PedidoDTO dto){
         Pedido bus = new Pedido();
+
         bus.setTotal(dto.getTotal());
         bus.setSubtotal(dto.getSubtotal());
         bus.setDataDeCriacao(dto.getDataDeCriacao());
@@ -369,6 +379,13 @@ public class PedidoService {
             }
             bus.setParcelamento(m);
         }
+        if(dto.getMetodoPag() != null){
+            MetodoPag m = new MetodoPag();
+            if(dto.getMetodoPag().getId_metodoPag() != null){
+                m.setId_metodoPag(dto.getMetodoPag().getId_metodoPag());
+            }
+            bus.setMetodoPag(m);
+        }
         if(dto.getNf() != null){
             Nf m = new Nf();
             if(dto.getNf().getId_nf() != null){
@@ -406,6 +423,7 @@ public class PedidoService {
     private PedidoDTO businessToDTO(Pedido bus){
         PedidoDTO dto = new PedidoDTO();
         dto.setId(bus.getId());
+
         dto.setTotal(bus.getTotal());
         dto.setSubtotal(bus.getSubtotal());
         dto.setDataDeCriacao(bus.getDataDeCriacao());
@@ -464,6 +482,12 @@ public class PedidoService {
             formaPagamento.setParcelamento(bus.getParcelamento().getParcelamento());
             formaPagamento.setQtdParcelas(bus.getParcelamento().getQtdParcelas());
             dto.setPagamento(formaPagamento);
+        }
+        if(bus.getMetodoPag() != null) {
+            MetodoPagDTO metodoPag = new MetodoPagDTO();
+            metodoPag.setId_metodoPag(bus.getMetodoPag().getId_metodoPag());
+            metodoPag.setMetodoPag(bus.getMetodoPag().getMetodoPag());
+            dto.setMetodoPag(metodoPag);
         }
         if(bus.getStatusEntrega()!= null) {
             StatusPedidoDTO statusPedido = new StatusPedidoDTO();
