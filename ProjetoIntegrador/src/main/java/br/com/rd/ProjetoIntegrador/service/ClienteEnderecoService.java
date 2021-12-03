@@ -35,6 +35,9 @@ public class ClienteEnderecoService {
             if(dto.getClienteEnderecoKey().getEndereco().getId_endereco()!=null){
                 dto.getClienteEnderecoKey().setEndereco(this.businessToDto(this.enderecoRepository.findById(dto.getClienteEnderecoKey().getEndereco().getId_endereco()).get()));
             }else{
+                if(dto.getClienteEnderecoKey().getEndereco().getDestinatario()==null){
+                    dto.getClienteEnderecoKey().getEndereco().setDestinatario(dto.getClienteEnderecoKey().getCliente().getNome());
+                }
                 dto.getClienteEnderecoKey().setEndereco(this.createEndereco(dto.getClienteEnderecoKey().getEndereco()));
             }
         }
@@ -163,6 +166,7 @@ public class ClienteEnderecoService {
         bus.setNumero(dto.getNumero());
         bus.setPonto_referencia(dto.getPonto_referencia());
         bus.setRua(dto.getRua());
+        bus.setDestinatario(dto.getDestinatario());
         return bus;
     }
 
@@ -177,6 +181,7 @@ public class ClienteEnderecoService {
         dto.setNumero(bus.getNumero());
         dto.setPonto_referencia(bus.getPonto_referencia());
         dto.setRua(bus.getRua());
+        dto.setDestinatario(bus.getDestinatario());
         return dto;
     }
 

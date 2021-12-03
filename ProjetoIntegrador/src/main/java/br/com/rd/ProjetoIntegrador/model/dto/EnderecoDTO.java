@@ -13,6 +13,7 @@ public class EnderecoDTO {
     private String numero;
     private String complemento;
     private String ponto_referencia;
+    private String destinatario;
 
     public EnderecoDTO(){}
 }

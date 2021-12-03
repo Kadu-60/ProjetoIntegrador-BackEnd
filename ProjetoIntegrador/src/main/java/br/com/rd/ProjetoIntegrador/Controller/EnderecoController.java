@@ -26,7 +26,7 @@ public class EnderecoController {
     public EnderecoDTO create(@Valid @RequestBody EnderecoDTO dto ){
         return this.enderecoService.create(dto);
     }
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public EnderecoDTO update(@PathVariable("id") Long id, @RequestBody EnderecoDTO dto){
         return this.enderecoService.updateById(id, dto);
     }

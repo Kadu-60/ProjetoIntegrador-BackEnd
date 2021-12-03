@@ -50,7 +50,7 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
                         "/produtos/por-categoria/{id}", "/produtos/por-marca/{id}", "/produtos/por-familia/{id}", "/Pedido/{id}", "/clienteEndereco/cliente/{id}"
                         , "/produtos/por-prato/{id}", "/Marca", "/Marca/{id}", "/Card/Marca/{id}", "/Card/{id_cat}/{id_marc}/{id_fam}/{id_prato}"
                         ,"/produtos/buscar/{id}","/formulariocontato/", "/preco/{id}", "/Card/todosDestaques", "/Card/multi","/Card/busca/{busca}", "/Card/{id}", "/preco/findAllById_produto/{id}").permitAll()
-                .antMatchers(HttpMethod.PUT,"/cadastroCliente/alterarSenha", "/clienteEndereco/EndPrincipal/{id_cliente}/{id_endereco}", "/clienteEndereco/EndEntrega/{id_cliente}/{id_endereco}").permitAll()
+                .antMatchers(HttpMethod.PUT,"/cadastroCliente/alterarSenha", "/clienteEndereco/EndPrincipal/{id_cliente}/{id_endereco}", "/clienteEndereco/EndEntrega/{id_cliente}/{id_endereco}", "/Endereco/{id}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors().configurationSource(corsConfigurationSource()).and()

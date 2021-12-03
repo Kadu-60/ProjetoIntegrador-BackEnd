@@ -32,6 +32,8 @@ public class Endereco {
     private String complemento;
     @Column(nullable = false)
     private String ponto_referencia;
+    @Column(nullable = false)
+    private String destinatario;
 
 
 }

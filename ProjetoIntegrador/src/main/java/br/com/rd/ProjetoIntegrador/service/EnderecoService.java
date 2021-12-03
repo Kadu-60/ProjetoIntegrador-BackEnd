@@ -40,6 +40,9 @@ public class EnderecoService {
             if(find.get() instanceof Endereco){
                 Endereco e = find.get();
                 e.setId_endereco(id);
+                if(dto.getDestinatario() != null){
+                    e.setDestinatario(dto.getDestinatario());
+                }
                 if(dto.getNumero() != null){
                     e.setNumero(dto.getNumero());
                 }
@@ -93,6 +96,7 @@ public class EnderecoService {
         bus.setNumero(dto.getNumero());
         bus.setPonto_referencia(dto.getPonto_referencia());
         bus.setRua(dto.getRua());
+        bus.setDestinatario(dto.getDestinatario());
         return bus;
     }
 
@@ -107,6 +111,7 @@ public class EnderecoService {
         dto.setNumero(bus.getNumero());
         dto.setPonto_referencia(bus.getPonto_referencia());
         dto.setRua(bus.getRua());
+        dto.setDestinatario(bus.getDestinatario());
         return dto;
     }
 }
