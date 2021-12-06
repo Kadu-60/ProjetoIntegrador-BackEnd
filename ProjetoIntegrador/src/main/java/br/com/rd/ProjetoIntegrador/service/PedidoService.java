@@ -77,7 +77,7 @@ public class PedidoService {
         em.setEmailFrom("projetodevbrew@gmail.com");
         em.setEmailTo(pedido.getCliente().getEmail());
         em.setSubject("Pedido "+pedido.getId());
-        em.setText("Muito obrigado por comprar com a gente");
+        em.setText("É ótimo descobrir que os nossos clientes prezam pela qualidade e bom atendimento. \nObrigado por comprar com conosco.");
         em.setOwnerRef("projetodevbrew@gmail.com");
         this.emailService.sendEmail(em);
         System.out.println("-------------------------------------------------------------------------------------");
@@ -163,7 +163,7 @@ public class PedidoService {
                 em.setEmailFrom("projetodevbrew@gmail.com");
                 em.setEmailTo(pedido.getCliente().getEmail());
                 em.setSubject("Pedido "+pedido.getId());
-                em.setText("Muito obrigado por comprar com a gente");
+                em.setText("É ótimo descobrir que os nossos clientes prezam pela qualidade e bom atendimento. \nObrigado por comprar com conosco.");
                 em.setOwnerRef("projetodevbrew@gmail.com");
                 this.emailService.sendEmail(em);
                 System.out.println("-------------------------------------------------------------------------------------");
@@ -369,6 +369,12 @@ public class PedidoService {
                 m.setPonto_referencia(dto.getEndereco().getPonto_referencia());
                 m.setEstado(dto.getEndereco().getEstado());
                 m.setNumero(dto.getEndereco().getNumero());
+                if(dto.getEndereco().getDestinatario()!=null){
+                    m.setDestinatario(dto.getEndereco().getDestinatario());
+                }else{
+                    m.setDestinatario(dto.getCliente().getNome());
+                }
+
             }
             bus.setEndereco(m);
         }
@@ -474,6 +480,7 @@ public class PedidoService {
             endereco.setNumero(bus.getEndereco().getNumero());
             endereco.setCep(bus.getEndereco().getCep());
             endereco.setBairro(bus.getEndereco().getBairro());
+            endereco.setDestinatario(bus.getEndereco().getDestinatario());
             dto.setEndereco(endereco);
         }
         if(bus.getParcelamento() != null) {

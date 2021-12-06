@@ -52,7 +52,7 @@ public class ClienteService {
         em.setEmailFrom("projetodevbrew@gmail.com");
         em.setEmailTo(novoCliente.getEmail());
         em.setSubject("Criacao de conta na devbrew");
-        em.setText("Muito obrigado por criar sua conta com a gente");
+        em.setText("Obrigado por se cadastrar em nossa loja!");
         em.setOwnerRef("projetodevbrew@gmail.com");
         this.emailService.sendEmail(em);
         return this.clienteToDto(novoCliente);
