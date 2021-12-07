@@ -34,7 +34,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 
-            String mailContent ="<h2>"+emailModel.getText()+"</h2>"+"<hr><img src ='cid:logoImage' style='margin: 0 auto'/> <hr>\n";
+            String mailContent ="<h2>"+emailModel.getText()+"</h2>"+"<hr><img src ='cid:logoImage' width:'3 width='600' style='margin: 0 auto'/> <hr>\n";
 
             helper.setFrom(emailModel.getEmailFrom());
             helper.setTo(emailModel.getEmailTo());
