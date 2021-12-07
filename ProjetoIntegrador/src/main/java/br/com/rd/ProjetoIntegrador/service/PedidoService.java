@@ -361,6 +361,9 @@ public class PedidoService {
             Cartao m = new Cartao();
             if(dto.getCartao().getId_Cartao() != null){
                 m.setId_Cartao(dto.getId());
+                m.setNome(dto.getCartao().getNome());
+                m.setNumero(dto.getCartao().getNumero());
+                m.setValidade(dto.getCartao().getValidade());
             }else{
                 m.setNome(dto.getCartao().getNome());
                 m.setNumero(dto.getCartao().getNumero());
