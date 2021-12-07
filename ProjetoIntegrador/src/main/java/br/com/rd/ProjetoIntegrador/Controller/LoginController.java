@@ -88,4 +88,9 @@ public class LoginController {
 
         return null;
     }
+
+    @GetMapping("/validarToken")
+    public void validartoken(){
+
+    }
 }
