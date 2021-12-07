@@ -43,7 +43,7 @@ public class JWTConfiguracao extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.DELETE, "/clienteEndereco/DeleteEndereco/{id_cliente}/{id_endereco}","/clienteCartao/delete/{id1}/{id2}").permitAll()
-                .antMatchers(HttpMethod.POST, "/login", "/cadastroCliente/salvar", "/Card/multi", "/clienteCartao/create"
+                .antMatchers(HttpMethod.POST, "/login", "/cadastroCliente/salvar", "/Card/multi", "/clienteCartao/create", "/Pedido/gerarNf"
                         ,"/formulariocontato", "/clienteEndereco/create").permitAll()
                 .antMatchers(HttpMethod.GET, "/home/categorias", "/home/destaques", "/home/novidades", "/clienteCartao/cliente/{id}"
                         ,"/produtos", "/produtos/{id}","/Estoque/{id}", "/cadastro-cliente/senha/{email}", "/parcelas", "/cadastro-cliente/getByEmail/{email}",

@@ -4,6 +4,7 @@ import br.com.rd.ProjetoIntegrador.model.Embeddeble.Item_Nf_Key;
 import br.com.rd.ProjetoIntegrador.model.dto.*;
 import br.com.rd.ProjetoIntegrador.model.entity.*;
 import br.com.rd.ProjetoIntegrador.repository.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -106,7 +107,7 @@ public class PedidoService {
         }
         return null;
     }
-    public NfDTO gerarNf(PedidoDTO pedidoDTO){
+    public NFComArrayItensNfDTO gerarNf(PedidoDTO pedidoDTO){
         if(pedidoRepository.existsById(pedidoDTO.getId())){
 
             Pedido pedido = pedidoRepository.findById(pedidoDTO.getId()).get();
@@ -143,6 +144,7 @@ public class PedidoService {
 //            Conversão de nf business to nf dto
 //            Criando os Itens NF apartir dos itens pedido
                 List<Item_pedidoDTO> listItens = this.item_pedidoService.findByidpedido(pedido.getId());
+                List<Item_Nf_DTO> listNfDTO = new ArrayList<>();
                 for(Item_pedidoDTO item : listItens){
                     Item_Nf item_nf = new Item_Nf();
                     item_nf.setItem_nf_key(new Item_Nf_Key());
@@ -155,15 +157,23 @@ public class PedidoService {
                     item_nf.setValor_total((this.precoService.findLastPriceById_produto(item.getProduto().getId_produto()).getValor_preco()*item.getQuantidade_produto()));
                     item_nf.setQuantidade_produto(item.getQuantidade_produto());
                     item_nf.setDesconto_produto(0d);
-                    this.item_nfRepository.save(item_nf);
+                    Item_Nf_DTO item_nf_dto = new Item_Nf_DTO();
+                    BeanUtils.copyProperties(this.item_nfRepository.save(item_nf), item_nf_dto);
+                    item_nf_dto.setItem_nf_key(new Item_Nf_KeyDTO());
+                    BeanUtils.copyProperties(item_nf.getItem_nf_key(), item_nf_dto.getItem_nf_key());
+                    item_nf_dto.getItem_nf_key().setNf(new NfDTO());
+                    BeanUtils.copyProperties(item_nf.getItem_nf_key().getNf(), item_nf_dto.getItem_nf_key().getNf());
+                    item_nf_dto.setProduto(new ProdutoDTO());
+                    BeanUtils.copyProperties(item_nf.getProduto(), item_nf_dto.getProduto());
+                    listNfDTO.add(item_nf_dto);
                 }
 //            Criando os Itens NF apartir dos itens pedido
 //            Criando o Email de confirmação de Pedido
                 EmailModel em = new EmailModel();
                 em.setEmailFrom("projetodevbrew@gmail.com");
                 em.setEmailTo(pedido.getCliente().getEmail());
-                em.setSubject("Pedido "+pedido.getId());
-                em.setText("É ótimo descobrir que os nossos clientes prezam pela qualidade e bom atendimento. \nObrigado por comprar com conosco.");
+                em.setSubject("Sua nota fiscal do Pedido "+pedido.getId()+" chegou!");
+                em.setText("É ótimo descobrir que os nossos clientes prezam pela qualidade e bom atendimento. \nObrigado por comprar com conosco.\nO link do sua nota fiscal é :\nhttp://localhost:3000/notafiscal/"+pedido.getId());
                 em.setOwnerRef("projetodevbrew@gmail.com");
                 this.emailService.sendEmail(em);
                 System.out.println("-------------------------------------------------------------------------------------");
@@ -172,29 +182,32 @@ public class PedidoService {
                 System.out.println("-------------------------------------------------------------------------------------");
                 System.out.println("-------------------------------------------------------------------------------------");
 //            Criando o Email de confirmação de Pedido
-                return dto;
+                NFComArrayItensNfDTO nfComArrayItensNfDTO = new NFComArrayItensNfDTO();
+                nfComArrayItensNfDTO.setNf(dto);
+                nfComArrayItensNfDTO.setItem_nf(listNfDTO);
+                return nfComArrayItensNfDTO;
             }else{
-                Nf business = pedido.getNf();
-//            Conversão de nf business to nf dto
-                NfDTO dto = new NfDTO();
-                dto.setId_nf(business.getId_nf());
-                dto.setChave_acesso(business.getChave_acesso());
-                dto.setSerie(business.getSerie());
-                dto.setEmissao(business.getEmissao());
-                dto.setSubtotal(business.getSubtotal());
-                dto.setTotal(business.getTotal());
-                if (business.getCliente() != null){
-                    ClienteDTO clienteDTO = new ClienteDTO();
-                    clienteDTO.setId_Cliente(business.getCliente().getId_Cliente());
-                    clienteDTO.setNome(business.getCliente().getNome());
-                    clienteDTO.setCpf(business.getCliente().getCpf());
-                    clienteDTO.setEmail(business.getCliente().getEmail());
-                    clienteDTO.setTelefone(business.getCliente().getTelefone());
-                    clienteDTO.setDataNascimento(business.getCliente().getDataNascimento());
-                    dto.setCliente(clienteDTO);
+                Nf nfbus = this.nfRepository.findById(pedido.getNf().getId_nf()).get();
+                List<Item_Nf> item_nfList = this.item_nfRepository.getById_nf(pedido.getNf().getId_nf());
+                List<Item_Nf_DTO> item_nf_dtoList = new ArrayList<>();
+                NfDTO nfDTO = new NfDTO();
+                nfDTO.setCliente(new ClienteDTO());
+                BeanUtils.copyProperties(nfbus, nfDTO);
+                BeanUtils.copyProperties(nfbus.getCliente(),nfDTO.getCliente());
+                for(Item_Nf item_nf: item_nfList){
+                    Item_Nf_DTO item_nf_dto = new Item_Nf_DTO();
+                    item_nf_dto.setItem_nf_key(new Item_Nf_KeyDTO());
+                    item_nf_dto.getItem_nf_key().setNf(new NfDTO());
+                    BeanUtils.copyProperties(item_nf, item_nf_dto);
+                    BeanUtils.copyProperties(item_nf.getItem_nf_key().getNf(),item_nf_dto.getItem_nf_key().getNf());
+                    item_nf_dto.setProduto(new ProdutoDTO());
+                    BeanUtils.copyProperties(item_nf.getProduto(),item_nf_dto.getProduto());
+                    item_nf_dtoList.add(item_nf_dto);
                 }
-//            Conversão de nf business to nf dto
-                return dto;
+                NFComArrayItensNfDTO nfComArrayItensNfDTO = new NFComArrayItensNfDTO();
+                nfComArrayItensNfDTO.setItem_nf(item_nf_dtoList);
+                nfComArrayItensNfDTO.setNf(nfDTO);
+                return nfComArrayItensNfDTO;
             }
 
         }
